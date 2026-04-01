@@ -10,6 +10,11 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import ShareButtons from '@/components/ShareButtons';
 import ArticleCard from '@/components/ArticleCard';
+import { getLinkedBroadcast } from '@/lib/mdx';
+import ArticleFooter from '@/components/article/ArticleFooter';
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
 
 export async function generateStaticParams() {
   const articles = getArticles();
@@ -80,6 +85,24 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     // fallback to original date if parsing fails
   }
 
+  // Extract frontmatter for ArticleFooter
+  let frontmatter: any = {};
+  let linkedBroadcast = null;
+  try {
+    const fullPath = path.join(process.cwd(), 'src/app/content', `${resolvedParams.slug}.mdx`);
+    if (fs.existsSync(fullPath)) {
+      const fileContents = fs.readFileSync(fullPath, 'utf8');
+      const matterResult = matter(fileContents);
+      frontmatter = matterResult.data;
+      
+      if (frontmatter.linked_broadcast) {
+        linkedBroadcast = getLinkedBroadcast(frontmatter.linked_broadcast);
+      }
+    }
+  } catch (e) {
+    console.error("Error parsing frontmatter:", e);
+  }
+
   return (
     <div className="min-h-screen bg-background relative pb-20">
       <ProgressBar />
@@ -91,8 +114,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <span className="font-medium text-sm">Back to Articles</span>
         </Link>
       </div>
-
-
 
       <article className="w-full">
         {(article.imageWide || article.imageSquare) && (
@@ -163,6 +184,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <div className="prose prose-invert prose-lg max-w-none text-zinc-300 font-sans">
             <MDXRemote source={article.content} components={mdxComponents} />
           </div>
+
+          {/* დინამიური დასასრული (Related ლოგიკით და AABC შოკით) */}
+          <ArticleFooter frontmatter={frontmatter} linkedBroadcast={linkedBroadcast} />
 
           {/* Social Sharing (Mobile) */}
           <ShareButtons title={article.title} isDesktop={false} className="md:hidden flex items-center justify-center gap-6 mt-16 border-t border-outline-variant/20 pt-8" />

@@ -14,12 +14,13 @@ export interface ArticleData {
   content: string;
 }
 
-const contentDir = path.join(process.cwd(), 'src/app/content');
+const contentDir = path.join(process.cwd(), 'src/content/editorials');
 const imagesDir = path.join(process.cwd(), 'public/images');
-
+const EDITORIALS_PATH = path.join(process.cwd(), 'src/content/editorials');
+const BROADCASTS_PATH = path.join(process.cwd(), 'src/content/broadcasts');
 function resolveImages(prefix: string) {
   if (!prefix) return { imageWide: '', imageSquare: '' };
-  
+
   // If it's already a full path or doesn't match the new prefix pattern, return it as is
   if (prefix.includes('/') || prefix.endsWith('.webp') || prefix.endsWith('.jpg') || prefix.endsWith('.png')) {
     const p = prefix.startsWith('/') ? prefix : `/images/${prefix}`;
@@ -28,17 +29,29 @@ function resolveImages(prefix: string) {
 
   const wideName = `${prefix}1200.webp`;
   const squareName = `${prefix}500.webp`;
-  
+
   const hasSquare = fs.existsSync(path.join(imagesDir, squareName));
   const hasWide = fs.existsSync(path.join(imagesDir, wideName));
-  
+
   // If even the wide doesn't exist, we might have a broken link, but let's assume it exists or fallback gracefully
   return {
     imageWide: hasWide ? `/images/${wideName}` : '',
     imageSquare: hasSquare ? `/images/${squareName}` : (hasWide ? `/images/${wideName}` : ''),
   };
 }
+export function getLinkedBroadcast(broadcastSlug: string) {
+  try {
+    const fullPath = path.join(BROADCASTS_PATH, `${broadcastSlug}.mdx`);
+    if (!fs.existsSync(fullPath)) return null;
 
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const { data } = matter(fileContents);
+    return { slug: broadcastSlug, ...data };
+  } catch (error) {
+    console.error("Broadcast not found:", error);
+    return null;
+  }
+}
 export function getArticles(): ArticleData[] {
   if (!fs.existsSync(contentDir)) return [];
   const fileNames = fs.readdirSync(contentDir);

@@ -68,7 +68,7 @@ export default function Home() {
                             src={featuredArticle.imageWide || featuredArticle.imageSquare || ''}
                             alt={featuredArticle.title}
                             fill
-                            className="object-cover grayscale-[0.8] group-hover/item:grayscale-0 transition-all duration-700 group-hover/item:scale-105"
+                            className="object-cover group-hover/item:grayscale-0 transition-all duration-700 group-hover/item:scale-105"
                           />
                           <div className="absolute inset-0 bg-red-900/10 mix-blend-multiply group-hover/item:opacity-0 transition-opacity duration-500"></div>
                         </div>
