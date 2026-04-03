@@ -39,7 +39,7 @@ function resolveImages(prefix: string) {
     imageSquare: hasSquare ? `/images/${squareName}` : (hasWide ? `/images/${wideName}` : ''),
   };
 }
-export function getLinkedBroadcast(broadcastSlug: string) {
+export function getLinkedBroadcast(broadcastSlug: string): Record<string, any> | null {
   try {
     const fullPath = path.join(BROADCASTS_PATH, `${broadcastSlug}.mdx`);
     if (!fs.existsSync(fullPath)) return null;
