@@ -6,6 +6,7 @@ import { getLinkedBroadcast } from '@/lib/articles';
 import { mdxComponents } from '@/components/MDXComponents';
 import NovelClientWrapper from './NovelClientWrapper';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export async function generateStaticParams() {
   const chapters = getNovelChapters();
@@ -73,10 +74,12 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
       <div className="w-full my-12 relative bg-zinc-950 border border-white/10 p-3 shadow-2xl">
         <div className="border border-white/5 relative overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={`/novel_images/sketch/${chapter.coverImage}`}
             alt={`Sketch for ${chapter.title}`}
-            className="w-full h-auto object-cover opacity-90 transition-opacity hover:opacity-100 mix-blend-luminosity hover:mix-blend-normal"
+            width={1200}
+            height={630}
+            className="w-full h-auto object-cover"
           />
           <div className="absolute bottom-4 right-4 bg-black/80 backdrop-blur px-3 py-1 font-mono text-[9px] uppercase tracking-widest text-zinc-400 border border-white/10">
             FIELD SKETCH // REF: {chapter.chapterNumber}
@@ -113,12 +116,12 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
         <div className="prose prose-invert prose-lg md:prose-xl max-w-none text-zinc-300 font-serif leading-relaxed tracking-wide novel-content relative">
           <MDXRemote source={chapter.content} components={novelMdxComponents} />
         </div>
-        {/* ... ტექსტის დასასრული (MDXRemote) ... */}
+        {/* ... text end (MDXRemote) ... */}
         <div className="prose prose-invert prose-lg md:prose-xl max-w-none text-zinc-300 font-serif leading-relaxed tracking-wide novel-content relative">
           <MDXRemote source={chapter.content} components={novelMdxComponents} />
         </div>
 
-        {/* Mobile Dossier (აწეულია ნავიგაციის ზემოთ მობილურისთვის) */}
+        {/* Mobile Dossier */}
         <div className="xl:hidden mt-16 border border-white/10 bg-zinc-950/50 p-6 sm:p-8 flex flex-col gap-12 relative z-20 shadow-xl">
           {/* Archive Block */}
           <div>
@@ -126,9 +129,11 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
               Security Prefecture Archive
             </span>
             <div className="bg-zinc-900 border border-white/5 relative p-2 shadow-xl">
-              <img
+              <Image
                 src={`/novel_images/archive/${chapter.coverImage}`}
                 alt="Decrypted Archive"
+                width={1200}
+                height={630}
                 className="w-full h-auto object-contain border border-white/5 opacity-80"
               />
               <div className="absolute top-4 right-4 bg-black/60 px-2 py-1 font-mono text-[9px] text-red-500 uppercase tracking-widest border border-red-500/30">

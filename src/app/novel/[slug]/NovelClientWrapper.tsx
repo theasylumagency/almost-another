@@ -31,7 +31,6 @@ export default function NovelClientWrapper({ slug, chapters, currentChapter }: N
     localStorage.setItem('lastReadNovelChapter', slug);
   }, [slug]);
 
-  // ვფილტრავთ წინა 3 და შემდეგ 3 თავს
   const visiblePrev = chapters
     .filter(c => c.chapterNumber < currentChapter && c.chapterNumber >= currentChapter - 3)
     .sort((a, b) => a.chapterNumber - b.chapterNumber);
@@ -40,7 +39,6 @@ export default function NovelClientWrapper({ slug, chapters, currentChapter }: N
     .filter(c => c.chapterNumber > currentChapter && c.chapterNumber <= currentChapter + 3)
     .sort((a, b) => a.chapterNumber - b.chapterNumber);
 
-  // ფუნქცია გამჭვირვალობის დასადგენად (მანძილის მიხედვით)
   const getOpacityClass = (distance: number) => {
     if (distance === 1) return "opacity-70";
     if (distance === 2) return "opacity-40";
@@ -68,8 +66,8 @@ export default function NovelClientWrapper({ slug, chapters, currentChapter }: N
         onClose={() => setIsDrawerOpen(false)}
       />
 
-      {/* DESKTOP NAVIGATION: საბჭოთა რეტრო-ფუტურისტული კონსოლი */}
-      <div className="hidden md:flex flex-col fixed top-0 left-0 h-full w-[75px] bg-[#f3561c] border-r border-[#2D3A33] z-40 items-center justify-between py-6 group hover:bg-[#ff4400] transition-colors duration-500 ease-in-out font-mono text-[10px] text-[#A3B1A9] uppercase tracking-widest">
+      {/* DESKTOP NAVIGATION */}
+      <div className="hidden md:flex flex-col fixed top-0 left-0 h-full w-[75px] bg-[#171f21] border-r border-[#2D3A33] z-40 items-center justify-between py-6 group hover:bg-[#0c1112] transition-colors duration-500 ease-in-out font-mono text-[10px] text-[#A3B1A9] uppercase tracking-widest">
 
         {/* section 1: archive */}
         <div className="flex flex-col items-center gap-2 w-full p-2 relative">
@@ -170,7 +168,7 @@ export default function NovelClientWrapper({ slug, chapters, currentChapter }: N
             <span>POWER ON</span>
           </div>
 
-          {/* დეკორატიული ტექსტი */}
+          {/* decorative text */}
           <div
             className="font-mono text-[9px] text-[#2D3A33] opacity-60 whitespace-nowrap mt-4 pointer-events-none select-none"
             style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
@@ -180,7 +178,7 @@ export default function NovelClientWrapper({ slug, chapters, currentChapter }: N
         </div>
       </div>
 
-      {/* MOBILE NAVIGATION: რჩება უცვლელი */}
+      {/* MOBILE NAVIGATION */}
       <div className="md:hidden fixed bottom-0 left-0 w-full bg-zinc-950 border-t border-white/10 z-40 flex flex-col pointer-events-auto">
         <div className="flex h-12 items-center justify-between px-2">
           {/* ToC Toggle */}
