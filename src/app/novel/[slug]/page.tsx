@@ -113,10 +113,7 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
           <div className="w-12 h-[1px] bg-accent mx-auto md:mx-0"></div>
         </header>
 
-        <div className="prose prose-invert prose-lg md:prose-xl max-w-none text-zinc-300 font-serif leading-relaxed tracking-wide novel-content relative">
-          <MDXRemote source={chapter.content} components={novelMdxComponents} />
-        </div>
-        {/* ... text end (MDXRemote) ... */}
+
         <div className="prose prose-invert prose-lg md:prose-xl max-w-none text-zinc-300 font-serif leading-relaxed tracking-wide novel-content relative">
           <MDXRemote source={chapter.content} components={novelMdxComponents} />
         </div>

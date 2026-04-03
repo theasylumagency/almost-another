@@ -93,3 +93,33 @@ body {
 .tension-reveal p {
   @apply m-0 text-2xl lg:text-3xl font-bold;
 }
+
+/* Brutalist Scrollbar */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-container-lowest);
+  border-left: 2px solid var(--color-surface-variant);
+  border-top: 2px solid var(--color-surface-variant);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--color-on-primary-container);
+}
+
+html {
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-accent) var(--color-surface-container-lowest);
+}
