@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
+import LiveClock from '@/components/aabc/LiveClock';
 
 const broadcasts = [
   {
@@ -36,17 +37,7 @@ const broadcasts = [
 
 export default function AABCHub() {
   const [mode, setMode] = useState<'lounge' | 'observatory'>('lounge');
-  const [time, setTime] = useState('');
   const isLounge = mode === 'lounge';
-
-  // ცოცხალი საათი ობსერვატორიის ეფექტისთვის
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = new Date();
-      setTime(`${now.getUTCHours().toString().padStart(2, '0')}:${now.getUTCMinutes().toString().padStart(2, '0')}:${now.getUTCSeconds().toString().padStart(2, '0')} UTC`);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className={`min-h-screen transition-colors duration-1000 font-sans ${isLounge
@@ -60,7 +51,7 @@ export default function AABCHub() {
         <Link href="/" className={`inline-flex items-center gap-3 transition-colors ${isLounge ? 'text-zinc-500 hover:text-[#D4AF37]' : 'text-zinc-500 hover:text-black'
           }`}>
           <ArrowLeft size={16} />
-          <span className="font-mono text-[10px] tracking-[0.3em] uppercase">Disconnect</span>
+          <span className="font-mono text-xs tracking-[0.2em] uppercase">Disconnect</span>
         </Link>
 
         {/* The God-Tier Mode Switch */}
@@ -68,14 +59,14 @@ export default function AABCHub() {
           }`}>
           <button
             onClick={() => setMode('lounge')}
-            className={`px-5 py-2 text-[10px] tracking-[0.2em] font-bold uppercase rounded-full transition-all duration-500 ${isLounge ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'text-zinc-400 hover:text-black'
+            className={`px-5 py-2 text-xs tracking-[0.2em] font-bold uppercase rounded-full transition-all duration-500 ${isLounge ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'text-zinc-400 hover:text-black'
               }`}
           >
             The Executive Lounge
           </button>
           <button
             onClick={() => setMode('observatory')}
-            className={`px-5 py-2 text-[10px] tracking-[0.2em] font-bold uppercase rounded-full transition-all duration-500 ${!isLounge ? 'bg-black text-white shadow-lg' : 'text-zinc-400 hover:text-[#D4AF37]'
+            className={`px-5 py-2 text-xs tracking-[0.2em] font-bold uppercase rounded-full transition-all duration-500 ${!isLounge ? 'bg-black text-white shadow-lg' : 'text-zinc-400 hover:text-[#D4AF37]'
               }`}
           >
             Clinical Observatory
@@ -95,9 +86,9 @@ export default function AABCHub() {
             </h1>
           </div>
           <div className="lg:col-span-4 flex flex-col justify-end pb-4">
-            <p className={`font-mono text-[10px] tracking-[0.3em] uppercase mb-4 ${isLounge ? 'text-[#D4AF37]/70' : 'text-black/50'
+            <p className={`font-mono text-xs tracking-[0.2em] uppercase mb-4 ${isLounge ? 'text-[#D4AF37]/70' : 'text-black/50'
               }`}>
-              Live Feed // {time || 'CONNECTING...'}
+              Live Feed // <LiveClock />
             </p>
             <p className={`text-lg leading-relaxed ${isLounge ? 'text-zinc-400' : 'text-zinc-700'
               }`}>
@@ -113,8 +104,8 @@ export default function AABCHub() {
         <section className="w-full">
           <div className={`flex justify-between items-end pb-4 border-b ${isLounge ? 'border-white/10' : 'border-black/10'
             }`}>
-            <span className="font-mono text-[10px] tracking-[0.2em] uppercase">Intercepted Transmissions</span>
-            <span className="font-mono text-[10px] tracking-[0.2em] uppercase">Action</span>
+            <span className="font-mono text-xs tracking-[0.2em] uppercase">Intercepted Transmissions</span>
+            <span className="font-mono text-xs tracking-[0.2em] uppercase">Action</span>
           </div>
 
           <div className="flex flex-col">
@@ -129,11 +120,11 @@ export default function AABCHub() {
               >
                 {/* Metadata Column */}
                 <div className="lg:col-span-3 flex flex-col gap-2">
-                  <span className={`font-mono text-[10px] tracking-[0.3em] uppercase ${isLounge ? 'text-[#D4AF37]' : 'text-black font-bold'
+                  <span className={`font-mono text-xs tracking-[0.2em] uppercase ${isLounge ? 'text-[#D4AF37]' : 'text-black font-bold'
                     }`}>
                     {broadcast.reality}
                   </span>
-                  <span className="font-mono text-[10px] tracking-widest text-zinc-500 uppercase">
+                  <span className="font-mono text-xs tracking-widest text-zinc-500 uppercase">
                     {broadcast.status} // {broadcast.date}
                   </span>
                 </div>
@@ -170,7 +161,7 @@ export default function AABCHub() {
 
       </main>
 
-      <footer className={`py-8 text-center font-mono text-[10px] tracking-[0.3em] uppercase mt-20 ${isLounge ? 'text-zinc-600' : 'text-zinc-400'
+      <footer className={`py-8 text-center font-mono text-xs tracking-[0.2em] uppercase mt-20 ${isLounge ? 'text-zinc-500' : 'text-zinc-500'
         }`}>
         &copy; {new Date().getFullYear()} AABC // OMNISCIENT PROTOCOL
       </footer>

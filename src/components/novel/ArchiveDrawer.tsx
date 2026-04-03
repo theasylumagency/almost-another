@@ -71,15 +71,15 @@ export default function ArchiveDrawer({ chapters, currentChapter, isOpen, onClos
 
                   <div className="space-y-1 font-mono text-xs">
                     <div className="flex justify-between">
-                      <span className="text-zinc-600">DATA VOLUME:</span>
+                      <span className="text-zinc-500">DATA VOLUME:</span>
                       <span className="text-zinc-300">{(chap.wordCount / 1024).toFixed(1)} KB</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-600">REQ. COGNITIVE PROCESSING:</span>
+                      <span className="text-zinc-500">REQ. COGNITIVE PROCESSING:</span>
                       <span className="text-zinc-300">{chap.readingTime}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-zinc-600">IDEOLOGICAL DEVIATION:</span>
+                      <span className="text-zinc-500">IDEOLOGICAL DEVIATION:</span>
                       <span className={`animate-pulse ${chap.ideologicalDeviation > 60 ? 'text-red-500' : 'text-accent'}`}>
                         {chap.ideologicalDeviation}%
                       </span>
@@ -92,7 +92,7 @@ export default function ArchiveDrawer({ chapters, currentChapter, isOpen, onClos
           })}
         </div>
         
-        <div className="p-4 border-t border-white/10 font-mono text-[10px] text-zinc-600 text-center uppercase">
+        <div className="p-4 border-t border-white/10 font-mono text-[10px] text-zinc-500 text-center uppercase">
           End of returned records
         </div>
       </div>

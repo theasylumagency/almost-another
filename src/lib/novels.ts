@@ -22,11 +22,16 @@ const contentDir = path.join(process.cwd(), 'src/content/novel');
 function calculateStats(content: string, chapterNumber: number) {
   const words = content.trim().split(/\s+/).length;
   const minutes = Math.max(1, Math.ceil(words / 200));
-  const readingTime = `${minutes}m ${Math.floor(Math.random() * 60).toString().padStart(2, '0')}s`;
   
-  // Random ideological deviation between 20 and 40, potentially higher for later chapters
+  // Deterministic "random" seconds based on word count
+  const pseudoRandomSeconds = (words * 7) % 60;
+  const readingTime = `${minutes}m ${pseudoRandomSeconds.toString().padStart(2, '0')}s`;
+  
+  // Deterministic deviation to prevent hydration mismatch 
+  // (stable across server/client but feels random per chapter)
   const baseDeviation = 20 + (chapterNumber * 2);
-  const ideologicalDeviation = Math.min(99, baseDeviation + Math.floor(Math.random() * 15));
+  const pseudoRandomDeviationAdd = (words + chapterNumber * 13) % 15;
+  const ideologicalDeviation = Math.min(99, baseDeviation + pseudoRandomDeviationAdd);
 
   return { wordCount: words, readingTime, ideologicalDeviation };
 }

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowUpRight, PlaySquare, Pause } from 'lucide-react';
+import LiveClock from '@/components/aabc/LiveClock';
 
 export default function AABCClientWrapper({
     frontmatter,
@@ -17,16 +18,6 @@ export default function AABCClientWrapper({
     const [isPlaying, setIsPlaying] = useState(false);
     const isLounge = mode === 'lounge';
 
-    // ანიმაციური საათი
-    const [time, setTime] = useState('');
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const now = new Date();
-            setTime(`${now.getUTCHours().toString().padStart(2, '0')}:${now.getUTCMinutes().toString().padStart(2, '0')}:${now.getUTCSeconds().toString().padStart(2, '0')} UTC`);
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
-
     return (
         <div className={`min-h-screen transition-colors duration-1000 font-sans ${isLounge ? 'bg-[#050505] text-zinc-400 selection:bg-[#D4AF37]/30' : 'bg-[#F2F2F2] text-zinc-600 selection:bg-black/20'
             }`}>
@@ -36,19 +27,19 @@ export default function AABCClientWrapper({
                 }`}>
                 <Link href="/" className={`inline-flex items-center gap-3 transition-colors ${isLounge ? 'text-zinc-500 hover:text-[#D4AF37]' : 'text-zinc-500 hover:text-black'}`}>
                     <ArrowLeft size={16} />
-                    <span className="font-mono text-[10px] tracking-[0.3em] uppercase hidden sm:block">Back to Monitor</span>
+                    <span className="font-mono text-xs tracking-[0.3em] uppercase hidden sm:block">Back to Monitor</span>
                 </Link>
 
                 <div className={`flex p-1 rounded-full border ${isLounge ? 'border-[#D4AF37]/20 bg-black' : 'border-black/10 bg-white'}`}>
                     <button
                         onClick={() => setMode('lounge')}
-                        className={`px-4 py-1.5 md:px-5 md:py-2 text-[8px] md:text-[10px] tracking-[0.2em] font-bold uppercase rounded-full transition-all duration-500 ${isLounge ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'text-zinc-400 hover:text-black'}`}
+                        className={`px-4 py-1.5 md:px-5 md:py-2 text-[10px] md:text-xs tracking-[0.2em] font-bold uppercase rounded-full transition-all duration-500 ${isLounge ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'text-zinc-400 hover:text-black'}`}
                     >
                         Lounge
                     </button>
                     <button
                         onClick={() => setMode('observatory')}
-                        className={`px-4 py-1.5 md:px-5 md:py-2 text-[8px] md:text-[10px] tracking-[0.2em] font-bold uppercase rounded-full transition-all duration-500 ${!isLounge ? 'bg-black text-white shadow-lg' : 'text-zinc-400 hover:text-[#D4AF37]'}`}
+                        className={`px-4 py-1.5 md:px-5 md:py-2 text-[10px] md:text-xs tracking-[0.2em] font-bold uppercase rounded-full transition-all duration-500 ${!isLounge ? 'bg-black text-white shadow-lg' : 'text-zinc-400 hover:text-[#D4AF37]'}`}
                     >
                         Observatory
                     </button>
@@ -61,7 +52,7 @@ export default function AABCClientWrapper({
                 <header className="mb-16 border-b pb-12" style={{ borderColor: isLounge ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }}>
                     <div className="flex justify-between items-end mb-8">
                         <div>
-                            <span className={`font-mono text-[10px] tracking-[0.3em] uppercase px-3 py-1 mb-4 inline-block ${isLounge ? 'bg-red-500/10 text-red-500' : 'bg-red-600 text-white'}`}>
+                            <span className={`font-mono text-xs tracking-[0.3em] uppercase px-3 py-1 mb-4 inline-block ${isLounge ? 'bg-red-500/10 text-red-500' : 'bg-red-600 text-white'}`}>
                                 INTERCEPTED: {frontmatter.type || 'AUDIO LOG'}
                             </span>
                             <h1 className={`text-4xl md:text-6xl font-serif font-black tracking-tighter leading-tight ${isLounge ? 'text-white' : 'text-black'}`}>
@@ -84,10 +75,10 @@ export default function AABCClientWrapper({
                         </button>
                         <div className="flex-1">
                             <div className="flex justify-between mb-2">
-                                <span className={`font-mono text-[10px] tracking-widest uppercase ${isLounge ? 'text-[#D4AF37]' : 'text-black font-bold'}`}>
+                                <span className={`font-mono text-xs tracking-widest uppercase ${isLounge ? 'text-[#D4AF37]' : 'text-black font-bold'}`}>
                                     {isPlaying ? 'DECRYPTING AUDIO...' : 'SIGNAL READY'}
                                 </span>
-                                <span className="font-mono text-[10px] text-zinc-500 tracking-widest">{time}</span>
+                                <span className="font-mono text-xs text-zinc-500 tracking-widest"><LiveClock /></span>
                             </div>
                             {/* Visualizer Bars */}
                             <div className="flex items-end gap-1 h-8">
@@ -119,7 +110,7 @@ export default function AABCClientWrapper({
                 <div className={`p-8 md:p-12 mb-24 border ${isLounge ? 'bg-[#0A0A0A]/50 border-white/5' : 'bg-white border-black/10 shadow-lg'}`}>
                     <div className="flex items-center gap-3 mb-6">
                         <span className={`w-2 h-2 rounded-full animate-pulse ${isLounge ? 'bg-[#D4AF37]' : 'bg-black'}`}></span>
-                        <h3 className={`font-mono text-[10px] tracking-[0.3em] uppercase ${isLounge ? 'text-[#D4AF37]' : 'text-black font-bold'}`}>
+                        <h3 className={`font-mono text-xs tracking-[0.3em] uppercase ${isLounge ? 'text-[#D4AF37]' : 'text-black font-bold'}`}>
                             SYSTEM MESSAGE // CURRENCY TRANSFER
                         </h3>
                     </div>
@@ -130,7 +121,7 @@ export default function AABCClientWrapper({
                         If you wish to fund his pathetic earthly delusions, you may drop your digital coins below. We promise not to take a cut.
                     </p>
 
-                    <div className="flex flex-wrap gap-4 font-mono text-[10px] tracking-widest uppercase">
+                    <div className="flex flex-wrap gap-4 font-mono text-xs tracking-widest uppercase">
                         <a
                             href="https://Ko-fi.com/almostanotheruniverse30822"
                             target="_blank"
@@ -154,7 +145,7 @@ export default function AABCClientWrapper({
                 {/* 4. THE METAVERSE LOOP (Context Editorial) */}
                 {frontmatter.target_editorial && (
                     <div className={`p-8 md:p-12 border-l-4 mb-24 ${isLounge ? 'bg-[#0A0A0A] border-[#D4AF37]' : 'bg-white border-black shadow-xl'}`}>
-                        <span className={`font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block ${isLounge ? 'text-[#D4AF37]' : 'text-black font-bold'}`}>
+                        <span className={`font-mono text-xs tracking-[0.3em] uppercase mb-4 block ${isLounge ? 'text-[#D4AF37]' : 'text-black font-bold'}`}>
                             [ CONTEXT: THE AUTHOR'S DELUSION ]
                         </span>
                         <p className={`mb-6 ${isLounge ? 'text-zinc-400' : 'text-zinc-600'}`}>
@@ -171,7 +162,7 @@ export default function AABCClientWrapper({
 
                 {/* 5. UP NEXT ON AABC */}
                 <section className={`pt-16 border-t ${isLounge ? 'border-white/10' : 'border-black/10'}`}>
-                    <span className={`font-mono text-[10px] tracking-[0.3em] uppercase mb-8 block ${isLounge ? 'text-white/50' : 'text-black/50'}`}>
+                    <span className={`font-mono text-xs tracking-[0.3em] uppercase mb-8 block ${isLounge ? 'text-white/50' : 'text-black/50'}`}>
                         UP NEXT // TRENDING INTERCEPTS
                     </span>
                     <div className="flex flex-col">

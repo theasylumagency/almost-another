@@ -1,19 +1,22 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 
 export default function NovelHub() {
+  const router = useRouter();
+
   useEffect(() => {
     // Determine the last read chapter from local storage
     const lastRead = localStorage.getItem('lastReadNovelChapter');
     
     if (lastRead) {
-      window.location.href = `/novel/${lastRead}`;
+      router.replace(`/novel/${lastRead}`);
     } else {
-      window.location.href = '/novel/chapter-1';
+      router.replace('/novel/chapter-1');
     }
-  }, []);
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center">

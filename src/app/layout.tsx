@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Noto_Serif } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import GlobalHeader from "@/components/GlobalHeader";
+import SystemDirectory from "@/components/navigation/SystemDirectory";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -44,6 +44,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased relative">
 
         {children}
+        <SystemDirectory />
       </body>
     </html>
   );
