@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const url = `${baseUrl}/novel/${chapter.slug}`;
   const title = `Chapter ${chapter.chapterNumber}: ${chapter.title} | ${chapter.bookTitle}`;
   const description = chapter.description || 'Read the chapter.';
-  
+
   const imagePath = chapter.coverImage || '';
   const imageUrl = imagePath ? (imagePath.startsWith('http') ? imagePath : `${baseUrl}/novel_images/archive/${imagePath.replace(/^\//, '')}`) : '';
 
@@ -63,6 +63,9 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
   const allChapters = getNovelChapters();
   const linkedBroadcast = chapter.linked_broadcast ? getLinkedBroadcast(chapter.linked_broadcast as string) : null;
 
+  // ვიპოვოთ წინა და შემდეგი თავები ახალი ნავიგაციისთვის
+  const prevChapter = allChapters.find(c => c.chapterNumber === chapter.chapterNumber - 1);
+  const nextChapter = allChapters.find(c => c.chapterNumber === chapter.chapterNumber + 1);
   // Custom MDX Components for this specific page injection
   const novelMdxComponents = {
     ...mdxComponents,
@@ -70,9 +73,9 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
       <div className="w-full my-12 relative bg-zinc-950 border border-white/10 p-3 shadow-2xl">
         <div className="border border-white/5 relative overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            src={`/novel_images/sketch/${chapter.coverImage}`} 
-            alt={`Sketch for ${chapter.title}`} 
+          <img
+            src={`/novel_images/sketch/${chapter.coverImage}`}
+            alt={`Sketch for ${chapter.title}`}
             className="w-full h-auto object-cover opacity-90 transition-opacity hover:opacity-100 mix-blend-luminosity hover:mix-blend-normal"
           />
           <div className="absolute bottom-4 right-4 bg-black/80 backdrop-blur px-3 py-1 font-mono text-[9px] uppercase tracking-widest text-zinc-400 border border-white/10">
@@ -85,15 +88,15 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
 
   return (
     <div className="min-h-screen bg-zinc-950 relative md:ml-[50px] flex flex-col xl:flex-row pb-24 md:pb-0">
-      <NovelClientWrapper 
-        slug={chapter.slug} 
+      <NovelClientWrapper
+        slug={chapter.slug}
         chapters={allChapters}
         currentChapter={chapter.chapterNumber}
       />
 
       {/* Main Reading Column */}
       <article className="flex-1 w-full max-w-3xl mx-auto px-6 pt-24 md:pt-32 pb-32 relative z-20 xl:mx-auto">
-        
+
         <header className="mb-24 text-center md:text-left border-b border-white/10 pb-16">
           <span className="block font-mono text-[10px] tracking-widest text-accent uppercase mb-6">
             LOG_TRANSCRIPT_ID: 1791 // {chapter.bookTitle}
@@ -110,33 +113,27 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
         <div className="prose prose-invert prose-lg md:prose-xl max-w-none text-zinc-300 font-serif leading-relaxed tracking-wide novel-content relative">
           <MDXRemote source={chapter.content} components={novelMdxComponents} />
         </div>
-
-        {/* End of chapter marker */}
-        <div className="mt-24 border-t border-white/10 pt-12 flex flex-col items-center justify-center">
-           <div className="w-2 h-2 bg-accent rounded-full animate-pulse mb-8"></div>
-           <p className="font-mono text-xs text-zinc-500 uppercase tracking-widest text-center">
-             End of Chapter {String(chapter.chapterNumber).padStart(2, '0')}
-             <br/>
-             Awaiting further transmission...
-           </p>
+        {/* ... ტექსტის დასასრული (MDXRemote) ... */}
+        <div className="prose prose-invert prose-lg md:prose-xl max-w-none text-zinc-300 font-serif leading-relaxed tracking-wide novel-content relative">
+          <MDXRemote source={chapter.content} components={novelMdxComponents} />
         </div>
 
-        {/* Mobile Dossier (displays below text when xl sidebar is hidden) */}
-        <div className="xl:hidden mt-24 border border-white/10 bg-zinc-950/50 p-6 sm:p-8 flex flex-col gap-12">
+        {/* Mobile Dossier (აწეულია ნავიგაციის ზემოთ მობილურისთვის) */}
+        <div className="xl:hidden mt-16 border border-white/10 bg-zinc-950/50 p-6 sm:p-8 flex flex-col gap-12 relative z-20 shadow-xl">
           {/* Archive Block */}
           <div>
             <span className="block font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-6 border-b border-white/10 pb-3">
               Security Prefecture Archive
             </span>
             <div className="bg-zinc-900 border border-white/5 relative p-2 shadow-xl">
-               <img 
-                 src={`/novel_images/archive/${chapter.coverImage}`} 
-                 alt="Decrypted Archive"
-                 className="w-full h-auto object-contain border border-white/5 opacity-80"
-               />
-               <div className="absolute top-4 right-4 bg-black/60 px-2 py-1 font-mono text-[9px] text-red-500 uppercase tracking-widest border border-red-500/30">
-                 RESTRICTED LEVEL 5
-               </div>
+              <img
+                src={`/novel_images/archive/${chapter.coverImage}`}
+                alt="Decrypted Archive"
+                className="w-full h-auto object-contain border border-white/5 opacity-80"
+              />
+              <div className="absolute top-4 right-4 bg-black/60 px-2 py-1 font-mono text-[9px] text-red-500 uppercase tracking-widest border border-red-500/30">
+                RESTRICTED LEVEL 5
+              </div>
             </div>
           </div>
 
@@ -147,41 +144,98 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
                 Interceptor Relay // Attached Audio
               </span>
               <div className="bg-zinc-900 border border-white/5 p-6 hover:border-accent transition-colors relative overflow-hidden group">
-                 <div className="absolute top-0 right-0 w-full h-[2px] bg-accent transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                 <h3 className="serif-display text-xl text-white font-bold mb-3">{linkedBroadcast.title as string}</h3>
-                 {linkedBroadcast.author && (
-                   <p className="text-zinc-500 font-mono text-xs uppercase mb-4">Voice: {linkedBroadcast.author as string}</p>
-                 )}
-                 <Link 
-                   href={`/aabc/${linkedBroadcast.slug}`}
-                   className="inline-flex font-mono text-xs uppercase tracking-widest text-accent hover:text-white transition-colors mt-4"
-                 >
-                   [ DECRYPT AUDIO ]
-                 </Link>
+                <div className="absolute top-0 right-0 w-full h-[2px] bg-accent transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                <h3 className="serif-display text-xl text-white font-bold mb-3">{linkedBroadcast.title as string}</h3>
+                {linkedBroadcast.author && (
+                  <p className="text-zinc-500 font-mono text-xs uppercase mb-4">Voice: {linkedBroadcast.author as string}</p>
+                )}
+                <Link
+                  href={`/aabc/${linkedBroadcast.slug}`}
+                  className="inline-flex font-mono text-xs uppercase tracking-widest text-accent hover:text-white transition-colors mt-4"
+                >
+                  [ DECRYPT AUDIO ]
+                </Link>
               </div>
             </div>
           )}
         </div>
+
+        {/* End of chapter marker & Navigation (ჩამოვიდა სულ ბოლოში) */}
+        <div className="mt-20 border-t border-white/10 pt-12 flex flex-col items-center justify-center w-full relative z-20">
+
+          {/* ვიზუალური ინდიკატორი */}
+          <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse mb-6 border border-red-900 shadow-[0_0_8px_rgba(220,38,38,0.6)]"></div>
+
+          <p className="font-mono text-xs text-[#A3B1A9] uppercase tracking-widest text-center mb-12">
+            End of Chapter {String(chapter.chapterNumber).padStart(2, '0')}
+            {!nextChapter && (
+              <>
+                <br /><br />
+                <span className="text-red-500/70 mt-4 block">Awaiting further transmission...</span>
+              </>
+            )}
+          </p>
+
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            {/* წინა თავის ღილაკი */}
+            {prevChapter ? (
+              <Link
+                href={`/novel/${prevChapter.slug}`}
+                className="group p-5 border border-white/5 bg-[#111915]/50 hover:bg-[#111915] hover:border-[#2D3A33] transition-all flex flex-col items-start relative overflow-hidden"
+              >
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-zinc-800 group-hover:bg-[#2D3A33] transition-colors"></div>
+                <span className="font-mono text-[10px] text-zinc-500 mb-3 uppercase tracking-widest pl-3">
+                  [ Access Previous ]
+                </span>
+                <span className="font-serif text-lg text-zinc-400 group-hover:text-white transition-colors pl-3">
+                  CH.{String(prevChapter.chapterNumber).padStart(2, '0')} — {prevChapter.title}
+                </span>
+              </Link>
+            ) : <div className="hidden md:block"></div>}
+
+            {/* შემდეგი თავის ღილაკი */}
+            {nextChapter ? (
+              <Link
+                href={`/novel/${nextChapter.slug}`}
+                className="group p-5 border border-[#2D3A33]/50 bg-[#1A2520]/30 hover:bg-[#1A2520] hover:border-red-900 transition-all flex flex-col items-end text-right relative overflow-hidden"
+              >
+                <div className="absolute right-0 top-0 bottom-0 w-1 bg-red-900/30 group-hover:bg-red-600 transition-colors"></div>
+                <span className="font-mono text-[10px] text-accent/70 mb-3 uppercase tracking-widest pr-3 flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></div>
+                  [ Decrypt Next Record ]
+                </span>
+                <span className="font-serif text-lg text-white group-hover:text-accent transition-colors pr-3">
+                  CH.{String(nextChapter.chapterNumber).padStart(2, '0')} — {nextChapter.title}
+                </span>
+              </Link>
+            ) : <div className="hidden md:block"></div>}
+          </div>
+        </div>
+
+
+
+
+
       </article>
 
       {/* Right Sidebar Dossier (Desktop XL Only) */}
       <aside className="hidden xl:block w-[400px] 2xl:w-[450px] border-l border-white/10 bg-zinc-950/50 relative shrink-0">
         <div className="sticky top-0 h-screen overflow-y-auto p-8 pt-32 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent flex flex-col gap-16">
-          
+
           {/* Archive Block */}
           <div className="group">
             <span className="block font-mono text-[10px] uppercase tracking-widest text-zinc-500 mb-6 border-b border-white/10 pb-4">
               Security Prefecture Archive
             </span>
             <div className="bg-zinc-900 border border-white/5 relative p-2 shadow-2xl transition-transform group-hover:scale-[1.02]">
-               <img 
-                 src={`/novel_images/archive/${chapter.coverImage}`} 
-                 alt="Decrypted Archive"
-                 className="w-full h-auto object-contain border border-white/5 opacity-80 group-hover:opacity-100 transition-opacity"
-               />
-               <div className="absolute top-4 right-4 bg-black/80 px-2 py-1 font-mono text-[9px] text-red-500 uppercase tracking-widest border border-red-500/30">
-                 RESTRICTED LEVEL 5
-               </div>
+              <img
+                src={`/novel_images/archive/${chapter.coverImage}`}
+                alt="Decrypted Archive"
+                className="w-full h-auto object-contain border border-white/5 opacity-80 group-hover:opacity-100 transition-opacity"
+              />
+              <div className="absolute top-4 right-4 bg-black/80 px-2 py-1 font-mono text-[9px] text-red-500 uppercase tracking-widest border border-red-500/30">
+                RESTRICTED LEVEL 5
+              </div>
             </div>
           </div>
 
@@ -202,7 +256,7 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
                     {linkedBroadcast.description as string}
                   </p>
                 )}
-                <Link 
+                <Link
                   href={`/aabc/${linkedBroadcast.slug}`}
                   className="inline-flex font-mono text-xs uppercase tracking-widest text-accent hover:text-white transition-colors"
                 >
