@@ -15,7 +15,7 @@ export default function ArticleCard({ article }: { article: ArticleData }) {
 
   return (
     <article className="flex flex-col group h-full">
-      <Link href={`/article/${article.slug}`} className="flex flex-col h-full cursor-pointer">
+      <Link href={`/articles/${article.slug}`} className="flex flex-col h-full cursor-pointer">
         <div className="aspect-[21/9] bg-surface-container-lowest overflow-hidden mb-8 relative">
           {(article.imageWide || article.imageSquare) && (
             <Image

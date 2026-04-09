@@ -28,7 +28,7 @@ export default function Home() {
         {latestArticle && (
           <section className="mb-32 grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
             <div className="lg:col-span-8 group overflow-hidden bg-surface-container-lowest relative">
-              <Link href={`/article/${latestArticle.slug}`} className="block">
+              <Link href={`/articles/${latestArticle.slug}`} className="block">
                 <div className="aspect-[21/9] overflow-hidden relative">
                   {(latestArticle.imageWide || latestArticle.imageSquare) && (
                     <Image

@@ -61,7 +61,7 @@ export default function Home() {
                 {featuredArticle && (
                   <div className="group/item relative flex-grow flex flex-col">
                     <div className="absolute left-[-1.5rem] md:left-[-2rem] top-0 bottom-0 w-[2px] bg-red-600 scale-y-0 group-hover/item:scale-y-100 transition-transform origin-top opacity-0 group-hover/item:opacity-100"></div>
-                    <Link href={`/article/${featuredArticle.slug}`} className="block cursor-pointer flex flex-col h-full">
+                    <Link href={`/articles/${featuredArticle.slug}`} className="block cursor-pointer flex flex-col h-full">
                       {(featuredArticle.imageSquare || featuredArticle.imageWide) && (
                         <div className="w-full aspect-video lg:aspect-square xl:aspect-video relative overflow-hidden mb-6 border border-white/10 group-hover/item:border-red-600/50 transition-colors">
                           <Image

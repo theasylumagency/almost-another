@@ -1,0 +1,5 @@
+=== PAGE.TSX ===
+rendering slug: poko
+Content contains InterviewImage? true
+availableImages: poko_1_c.png,poko_2_c.png,poko_3_c.png
+================
