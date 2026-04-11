@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Serif } from "next/font/google";
+import { Inter, Noto_Serif, GFS_Didot } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import SystemDirectory from "@/components/navigation/SystemDirectory";
@@ -9,14 +9,47 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const gfsDidot = GFS_Didot({
+  variable: "--font-gfs-didot",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 const notoSerif = Noto_Serif({
   variable: "--font-noto-serif",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Almost Another Articles",
-  description: "A premium article library",
+  title: {
+    default: 'Almost Another',
+    template: '%s | Almost Another',
+  },
+  description:
+    'Essays, dialogues, and the chronicle of a parallel world.',
+  applicationName: 'Almost Another',
+  keywords: [
+    'essays',
+    'dialogues',
+    'novel',
+    'archive',
+    'parallel world',
+    'breaking the paradigm',
+    'almost another',
+  ],
+  openGraph: {
+    title: 'Almost Another',
+    description:
+      'Essays, dialogues, and the chronicle of a parallel world.',
+    type: 'website',
+    siteName: 'Almost Another',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Almost Another',
+    description:
+      'Essays, dialogues, and the chronicle of a parallel world.',
+  },
 };
 
 export default function RootLayout({
@@ -27,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${notoSerif.variable} h-full antialiased dark`}
+      className={`${inter.variable} ${gfsDidot.variable} ${notoSerif.variable} h-full antialiased dark`}
     >
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet" />

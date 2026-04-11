@@ -25,7 +25,7 @@ export default function ArticleFooter({ frontmatter, linkedBroadcast }: any) {
             </p>
 
             <Link
-                href={`/aabc/${linkedBroadcast.slug}`}
+                href={`/dialogues/${linkedBroadcast.slug}`}
                 className="inline-flex items-center space-x-2 text-red-400 border border-red-500/50 px-6 py-3 hover:bg-red-500/10 transition-all uppercase tracking-widest text-xs font-bold rounded-xl"
             >
                 <span>Decrypt Transmission</span>

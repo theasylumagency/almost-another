@@ -32,7 +32,7 @@ export default function GlobalHeader() {
   const navLinks = [
     { href: '/articles', label: 'ARTICLES' },
     { href: '/novel', label: 'THE NOVEL' },
-    { href: '/aabc', label: 'BROADCAST' },
+    { href: '/dialogues', label: 'DIALOGUES' },
   ];
 
   // Hide the header entirely on the homepage

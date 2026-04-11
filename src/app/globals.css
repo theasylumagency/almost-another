@@ -10,7 +10,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), sans-serif;
   --font-serif: var(--font-noto-serif), serif;
-  
+  --font-didot: var(--font-gfs-didot), serif;
+
   --color-tertiary-container: #0053d0;
   --color-primary: #ffb4a9;
   --color-tertiary-fixed-dim: #b2c5ff;

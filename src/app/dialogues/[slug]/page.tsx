@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { getBroadcastBySlug, getAllBroadcasts } from '@/lib/mdx';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { mdxComponents } from '@/components/MDXComponents';
-import AABCClientWrapper from './AABCClientWrapper';
+import AABCInnerLayout from './AABCInnerLayout';
 import AABCDialogue from '@/components/aabc/AABCDialogue';
 import AABCInterviewImage from '@/components/aabc/AABCInterviewImage';
 
@@ -55,19 +55,53 @@ export default async function BroadcastPage({ params }: { params: Promise<{ slug
         return <AABCInterviewImage src={`/aabc_images/${resolvedParams.slug}/${filename}`} layout={layout} alt={`Interview Image ${index}`} />;
     };
 
+    const format = broadcast.frontmatter.format || 'interview';
+
     // Smart dialogue parsing + handle next-mdx-remote dropping evaluated JSX props
     const contentStringifiedProps = broadcast.content.replace(/<InterviewImage\s+index=\{([0-9]+)\}\s*\/>/g, '<InterviewImage index="$1" />');
-    const transformedContent = contentStringifiedProps.split('\n\n').map(block => {
-        const dialogueMatch = block.match(/^([A-Za-z0-9\s]+):\s+([\s\S]+)$/);
-        // Exclude things like "http: //" or "Note: " by making sure speaker name isn't too long
-        if (dialogueMatch && dialogueMatch[1].length < 25) {
-            return `<Dialogue speaker="${dialogueMatch[1].trim()}">\n\n${dialogueMatch[2].trim()}\n\n</Dialogue>`;
+    
+    // Parse into contiguous dialogue blocks to handle multi-paragraph speeches
+    let blocks = contentStringifiedProps.split(/\r?\n\r?\n/);
+    let combinedContent = [];
+    let currentDialogue: { speaker: string, text: string } | null = null;
+    
+    for (let block of blocks) {
+        // If it starts with JSX, clear dialogue tracker to prevent wrapping images
+        if (block.trim().startsWith('<')) {
+            if (currentDialogue) {
+                combinedContent.push(`<Dialogue speaker="${currentDialogue.speaker}" format="${format}">\n\n${currentDialogue.text}\n\n</Dialogue>`);
+                currentDialogue = null;
+            }
+            combinedContent.push(block);
+            continue;
         }
-        return block;
-    }).join('\n\n');
+    
+        const dialogueMatch = block.trim().match(/^([A-Za-z0-9\s]+):\s+([\s\S]+)$/);
+        // Exclude things like "http: //" or "Note: " by capping speaker length
+        if (dialogueMatch && dialogueMatch[1].length < 25) {
+            if (currentDialogue) {
+                combinedContent.push(`<Dialogue speaker="${currentDialogue.speaker}" format="${format}">\n\n${currentDialogue.text}\n\n</Dialogue>`);
+            }
+            currentDialogue = { speaker: dialogueMatch[1].trim(), text: dialogueMatch[2].trim() };
+        } else {
+            if (currentDialogue) {
+                // If we are tracking a speaker, append the text (multi-paragraph response)
+                currentDialogue.text += '\n\n' + block;
+            } else {
+                // Intro paragraphs or text before any speaker speaks
+                combinedContent.push(block);
+            }
+        }
+    }
+    // Flush any remaining dialogue
+    if (currentDialogue) {
+        combinedContent.push(`<Dialogue speaker="${currentDialogue.speaker}" format="${format}">\n\n${currentDialogue.text}\n\n</Dialogue>`);
+    }
+    
+    const transformedContent = combinedContent.join('\n\n');
 
     return (
-        <AABCClientWrapper
+        <AABCInnerLayout
             frontmatter={broadcast.frontmatter}
             relatedBroadcasts={relatedBroadcasts}
             content={<MDXRemote source={transformedContent} components={{ ...mdxComponents, Dialogue: AABCDialogue, InterviewImage }} />}

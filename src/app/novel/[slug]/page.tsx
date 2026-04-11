@@ -152,7 +152,7 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
                   <p className="text-zinc-500 font-mono text-xs uppercase mb-4">Voice: {linkedBroadcast.author as string}</p>
                 )}
                 <Link
-                  href={`/aabc/${linkedBroadcast.slug}`}
+                  href={`/dialogues/${linkedBroadcast.slug}`}
                   className="inline-flex font-mono text-xs uppercase tracking-widest text-accent hover:text-white transition-colors mt-4"
                 >
                   [ DECRYPT AUDIO ]
@@ -259,7 +259,7 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
                   </p>
                 )}
                 <Link
-                  href={`/aabc/${linkedBroadcast.slug}`}
+                  href={`/dialogues/${linkedBroadcast.slug}`}
                   className="inline-flex font-mono text-xs uppercase tracking-widest text-accent hover:text-white transition-colors"
                 >
                   [ DECRYPT AUDIO ]

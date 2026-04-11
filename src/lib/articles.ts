@@ -11,6 +11,7 @@ export interface ArticleData {
   description: string;
   imageWide?: string;
   imageSquare?: string;
+  linked_broadcast?: string;
   content: string;
 }
 
@@ -74,6 +75,7 @@ export function getArticles(): ArticleData[] {
         description: matterResult.data.description || '',
         imageWide,
         imageSquare,
+        linked_broadcast: matterResult.data.linked_broadcast || '',
         content: matterResult.content,
       };
     });
@@ -104,6 +106,7 @@ export function getArticleBySlug(slug: string): ArticleData | null {
       description: matterResult.data.description || '',
       imageWide,
       imageSquare,
+      linked_broadcast: matterResult.data.linked_broadcast || '',
       content: matterResult.content,
     };
   } catch (e) {

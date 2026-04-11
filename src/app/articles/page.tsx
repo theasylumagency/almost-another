@@ -92,18 +92,8 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-zinc-950 dark:bg-black w-full py-16 px-8 mt-20">
-        <div className="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
-          <div className="mb-8 md:mb-0">
-            <div className="font-serif text-lg font-bold text-white mb-2 uppercase">THE BRUTALIST SCHOLAR</div>
-            <div className="font-sans text-[10px] tracking-[0.2em] uppercase text-zinc-500">© 2024 THE BRUTALIST SCHOLAR // ALL RIGHTS REDACTED</div>
-          </div>
-          <div className="flex gap-12 font-sans text-[10px] tracking-[0.2em] uppercase text-zinc-600">
-            <Link href="#" className="hover:text-red-600 transition-colors hover:underline decoration-red-600">Privacy Protocol</Link>
-            <Link href="#" className="hover:text-red-600 transition-colors hover:underline decoration-red-600">Transmission Log</Link>
-            <Link href="#" className="hover:text-red-600 transition-colors hover:underline decoration-red-600">Terminal</Link>
-          </div>
-        </div>
+      <footer className={`py-12 border-t mt-32 text-center font-mono text-[10px] tracking-[0.3em] uppercase text-zinc-400 border-black/5`}>
+        &copy; {new Date().getFullYear()} Almost Another // OMNISCIENT PROTOCOL
       </footer>
     </div>
   );
