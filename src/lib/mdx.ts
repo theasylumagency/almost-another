@@ -6,6 +6,14 @@ const EDITORIALS_PATH = path.join(process.cwd(), 'src', 'content', 'editorials')
 const BROADCASTS_PATH = path.join(process.cwd(), 'src', 'content', 'broadcast');
 const BROADCAST_IMAGES_PATH = path.join(process.cwd(), 'public', 'aabc_images');
 
+export type BroadcastFrontmatter = Record<string, any> & { ogImage?: string };
+export type BroadcastData = {
+    slug: string;
+    frontmatter: BroadcastFrontmatter;
+    content: string;
+    ogImage?: string;
+};
+
 function resolveBroadcastOgImage(slug: string, data: Record<string, unknown>) {
     const raw = typeof data.og_image === 'string' ? data.og_image : (typeof data.ogImage === 'string' ? data.ogImage : '');
     if (raw) {
@@ -50,24 +58,25 @@ export function getLinkedBroadcast(broadcastSlug: string) {
 }
 // src/lib/mdx.ts - დაამატე ფაილის ბოლოში
 
-export function getBroadcastBySlug(slug: string) {
+export function getBroadcastBySlug(slug: string): BroadcastData | null {
     try {
         const fullPath = path.join(BROADCASTS_PATH, `${slug}.mdx`);
         if (!fs.existsSync(fullPath)) return null;
 
         const fileContents = fs.readFileSync(fullPath, 'utf8');
         const { data, content } = matter(fileContents);
+        const frontmatter = data as BroadcastFrontmatter;
 
-        const ogImage = resolveBroadcastOgImage(slug, data);
+        const ogImage = resolveBroadcastOgImage(slug, frontmatter);
 
-        return { slug, frontmatter: { ...data, ogImage }, content, ogImage };
+        return { slug, frontmatter: { ...frontmatter, ogImage }, content, ogImage };
     } catch (error) {
         console.error("Error reading broadcast:", error);
         return null;
     }
 }
 
-export function getAllBroadcasts() {
+export function getAllBroadcasts(): Array<BroadcastFrontmatter & { slug: string; ogImage?: string }> {
     try {
         if (!fs.existsSync(BROADCASTS_PATH)) return [];
 
@@ -79,8 +88,9 @@ export function getAllBroadcasts() {
                 const fullPath = path.join(BROADCASTS_PATH, file);
                 const fileContents = fs.readFileSync(fullPath, 'utf8');
                 const { data } = matter(fileContents);
-                const ogImage = resolveBroadcastOgImage(slug, data);
-                return { slug, ...data, ogImage };
+                const frontmatter = data as BroadcastFrontmatter;
+                const ogImage = resolveBroadcastOgImage(slug, frontmatter);
+                return { slug, ...frontmatter, ogImage };
             });
 
         return broadcasts.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
