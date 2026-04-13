@@ -1,12 +1,10 @@
 import Link from 'next/link';
 
 export default function ArticleFooter({ frontmatter, linkedBroadcast }: any) {
-    // თუ სტატიას არ აქვს AABC მიბმული, არაფერს ვარენდერებთ
     if (!linkedBroadcast) return null;
 
     return (
         <div className="mt-8 mb-16 bg-zinc-950 border border-red-500/30 p-6 md:p-8 rounded-2xl relative overflow-hidden font-mono text-zinc-300 shadow-2xl z-20">
-            {/* წითელი ხაზი და ანიმაცია */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 to-transparent"></div>
 
             <div className="flex items-center space-x-3 mb-6 border-b border-red-500/20 pb-4">

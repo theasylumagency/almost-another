@@ -152,13 +152,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <a href="https://paypal.me/BreakingTheParadigm" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 px-6 py-3 bg-[#00457C]/10 text-[#0079C1] hover:bg-[#00457C] hover:text-white rounded-xl transition-all duration-300 border border-[#0079C1]/30 font-medium">
                 PayPal
               </a>
-              <button className="flex items-center justify-center gap-2 px-6 py-3 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white rounded-xl transition-all duration-300 border border-white/10 font-medium">
-                Crypto
-              </button>
             </div>
           </section>
 
-          {/* AABC SHOCK BLOCK (ახლა დონაციის ქვემოთაა) */}
           <ArticleFooter frontmatter={frontmatter} linkedBroadcast={linkedBroadcast} />
 
         </div>
