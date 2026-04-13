@@ -34,10 +34,27 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = `${article.title} | THE BRUTALIST SCHOLAR`;
   const description = article.description || article.subtitle || 'Read the full article';
 
-  const imagePath = article.imageWide || article.imageSquare || '';
+  const imagePath = article.ogImage || article.imageWide || article.imageSquare || '';
   const imageUrl = imagePath ? (imagePath.startsWith('http') ? imagePath : `${baseUrl}${imagePath}`) : '';
 
-  return { title, description };
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      url,
+      images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : [],
+      authors: [article.author],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : [],
+    },
+  };
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {

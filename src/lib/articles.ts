@@ -11,6 +11,7 @@ export interface ArticleData {
   description: string;
   imageWide?: string;
   imageSquare?: string;
+  ogImage?: string;
   linked_broadcast?: string;
   content: string;
 }
@@ -18,7 +19,7 @@ export interface ArticleData {
 const contentDir = path.join(process.cwd(), 'src/content/editorials');
 const imagesDir = path.join(process.cwd(), 'public/images');
 const EDITORIALS_PATH = path.join(process.cwd(), 'src/content/editorials');
-const BROADCASTS_PATH = path.join(process.cwd(), 'src/content/broadcasts');
+const BROADCASTS_PATH = path.join(process.cwd(), 'src/content/broadcast');
 function resolveImages(prefix: string) {
   if (!prefix) return { imageWide: '', imageSquare: '' };
 
@@ -39,6 +40,21 @@ function resolveImages(prefix: string) {
     imageWide: hasWide ? `/images/${wideName}` : '',
     imageSquare: hasSquare ? `/images/${squareName}` : (hasWide ? `/images/${wideName}` : ''),
   };
+}
+function resolveEditorialOgImage(data: Record<string, unknown>) {
+  const raw = typeof data.og_image === 'string' ? data.og_image : (typeof data.ogImage === 'string' ? data.ogImage : '');
+  if (raw) {
+    const trimmed = raw.trim();
+    if (trimmed.startsWith('/')) return trimmed;
+    if (trimmed.includes('/')) return `/${trimmed}`;
+    if (/\.(webp|png|jpg|jpeg)$/i.test(trimmed)) return `/images/${trimmed}`;
+    const { imageWide, imageSquare } = resolveImages(trimmed);
+    return imageWide || imageSquare || '';
+  }
+
+  const fallback = typeof data.image === 'string' ? data.image : '';
+  const { imageWide, imageSquare } = resolveImages(fallback);
+  return imageWide || imageSquare || '';
 }
 export function getLinkedBroadcast(broadcastSlug: string): Record<string, any> | null {
   try {
@@ -65,6 +81,7 @@ export function getArticles(): ArticleData[] {
 
       const matterResult = matter(fileContents);
       const { imageWide, imageSquare } = resolveImages(matterResult.data.image || '');
+      const ogImage = resolveEditorialOgImage(matterResult.data);
 
       return {
         slug,
@@ -75,6 +92,7 @@ export function getArticles(): ArticleData[] {
         description: matterResult.data.description || '',
         imageWide,
         imageSquare,
+        ogImage,
         linked_broadcast: matterResult.data.linked_broadcast || '',
         content: matterResult.content,
       };
@@ -96,6 +114,7 @@ export function getArticleBySlug(slug: string): ArticleData | null {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const matterResult = matter(fileContents);
     const { imageWide, imageSquare } = resolveImages(matterResult.data.image || '');
+    const ogImage = resolveEditorialOgImage(matterResult.data);
 
     return {
       slug,
@@ -106,6 +125,7 @@ export function getArticleBySlug(slug: string): ArticleData | null {
       description: matterResult.data.description || '',
       imageWide,
       imageSquare,
+      ogImage,
       linked_broadcast: matterResult.data.linked_broadcast || '',
       content: matterResult.content,
     };

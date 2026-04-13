@@ -10,6 +10,7 @@ export interface NovelChapterData {
   chapterNumber: number;
   description: string;
   coverImage: string;
+  ogImage?: string;
   content: string;
   wordCount: number;
   readingTime: string;
@@ -18,6 +19,21 @@ export interface NovelChapterData {
 }
 
 const contentDir = path.join(process.cwd(), 'src/content/novel');
+
+function resolveNovelOgImage(data: Record<string, unknown>) {
+  const raw = typeof data.og_image === 'string' ? data.og_image : (typeof data.ogImage === 'string' ? data.ogImage : '');
+  if (raw) {
+    const trimmed = raw.trim();
+    if (trimmed.startsWith('/')) return trimmed;
+    if (trimmed.includes('/')) return `/${trimmed}`;
+    return `/novel_images/archive/${trimmed.replace(/^\//, '')}`;
+  }
+
+  if (typeof data.coverImage === 'string' && data.coverImage) {
+    return `/novel_images/archive/${data.coverImage.replace(/^\//, '')}`;
+  }
+  return '';
+}
 
 function calculateStats(content: string, chapterNumber: number) {
   const words = content.trim().split(/\s+/).length;
@@ -48,6 +64,7 @@ export function getNovelChapters(): NovelChapterData[] {
 
       const matterResult = matter(fileContents);
       const stats = calculateStats(matterResult.content, matterResult.data.chapterNumber || 0);
+      const ogImage = resolveNovelOgImage(matterResult.data);
 
       return {
         slug,
@@ -57,6 +74,7 @@ export function getNovelChapters(): NovelChapterData[] {
         chapterNumber: matterResult.data.chapterNumber || 0,
         description: matterResult.data.description || '',
         coverImage: matterResult.data.coverImage || '',
+        ogImage,
         content: matterResult.content,
         wordCount: stats.wordCount,
         readingTime: stats.readingTime,
@@ -76,6 +94,7 @@ export function getNovelChapterBySlug(slug: string): NovelChapterData | null {
     const matterResult = matter(fileContents);
     
     const stats = calculateStats(matterResult.content, matterResult.data.chapterNumber || 0);
+    const ogImage = resolveNovelOgImage(matterResult.data);
 
     return {
       slug,
@@ -85,6 +104,7 @@ export function getNovelChapterBySlug(slug: string): NovelChapterData | null {
       chapterNumber: matterResult.data.chapterNumber || 0,
       description: matterResult.data.description || '',
       coverImage: matterResult.data.coverImage || '',
+      ogImage,
       content: matterResult.content,
       wordCount: stats.wordCount,
       readingTime: stats.readingTime,

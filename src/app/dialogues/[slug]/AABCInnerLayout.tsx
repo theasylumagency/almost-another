@@ -4,6 +4,7 @@ import { useState, ReactNode, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowUpRight, PlaySquare, Pause } from 'lucide-react';
 import LiveClock from '@/components/aabc/LiveClock';
+import ShareButtons from '@/components/ShareButtons';
 
 export default function AABCInnerLayout({
     frontmatter,
@@ -51,7 +52,11 @@ export default function AABCInnerLayout({
             <main className="pt-32 pb-32 px-6 md:px-12 max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16">
 
                 {/* LEFT COLUMN: CONTENT */}
-                <div className="lg:col-span-8">
+                <div className="lg:col-span-8 relative">
+                    <div className="absolute top-0 -left-4 md:-left-8 lg:-left-12 h-full hidden md:block">
+                        <ShareButtons title={frontmatter.title} isDesktop={true} className="sticky top-32 flex flex-col items-center gap-6 py-4 w-12 border-l border-white/10" />
+                    </div>
+
                     {/* HEADER & PLAYER */}
                     <header className="mb-24 border-b border-white/10 pb-16">
                         <div className="flex justify-between items-end mb-8">
@@ -129,6 +134,8 @@ export default function AABCInnerLayout({
                             </Link>
                         </div>
                     )}
+
+                    <ShareButtons title={frontmatter.title} isDesktop={false} className="md:hidden flex items-center justify-center gap-6 mb-24 border-t border-white/10 pt-8" />
                 </div>
 
                 {/* RIGHT COLUMN: SURVEILLANCE DOSSIER */}

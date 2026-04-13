@@ -4,6 +4,32 @@ import matter from 'gray-matter';
 
 const EDITORIALS_PATH = path.join(process.cwd(), 'src', 'content', 'editorials');
 const BROADCASTS_PATH = path.join(process.cwd(), 'src', 'content', 'broadcast');
+const BROADCAST_IMAGES_PATH = path.join(process.cwd(), 'public', 'aabc_images');
+
+function resolveBroadcastOgImage(slug: string, data: Record<string, unknown>) {
+    const raw = typeof data.og_image === 'string' ? data.og_image : (typeof data.ogImage === 'string' ? data.ogImage : '');
+    if (raw) {
+        const trimmed = raw.trim();
+        if (trimmed.startsWith('/')) return trimmed;
+        if (trimmed.includes('/')) return `/${trimmed}`;
+        return `/aabc_images/${slug}/${trimmed}`;
+    }
+
+    if (typeof data.mainImage === 'string' && data.mainImage) {
+        return `/aabc_images/${slug}/${data.mainImage}`;
+    }
+
+    try {
+        const folder = path.join(BROADCAST_IMAGES_PATH, slug);
+        if (!fs.existsSync(folder)) return '';
+        const files = fs.readdirSync(folder).filter((file) => !file.startsWith('.'));
+        if (files.length === 0) return '';
+        files.sort();
+        return `/aabc_images/${slug}/${files[0]}`;
+    } catch {
+        return '';
+    }
+}
 
 export function getLinkedBroadcast(broadcastSlug: string) {
     try {
@@ -32,7 +58,9 @@ export function getBroadcastBySlug(slug: string) {
         const fileContents = fs.readFileSync(fullPath, 'utf8');
         const { data, content } = matter(fileContents);
 
-        return { slug, frontmatter: data, content };
+        const ogImage = resolveBroadcastOgImage(slug, data);
+
+        return { slug, frontmatter: { ...data, ogImage }, content, ogImage };
     } catch (error) {
         console.error("Error reading broadcast:", error);
         return null;
@@ -51,7 +79,8 @@ export function getAllBroadcasts() {
                 const fullPath = path.join(BROADCASTS_PATH, file);
                 const fileContents = fs.readFileSync(fullPath, 'utf8');
                 const { data } = matter(fileContents);
-                return { slug, ...data };
+                const ogImage = resolveBroadcastOgImage(slug, data);
+                return { slug, ...data, ogImage };
             });
 
         return broadcasts.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());

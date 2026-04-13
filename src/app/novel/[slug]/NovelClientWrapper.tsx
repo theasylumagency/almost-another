@@ -13,7 +13,7 @@ interface NovelClientWrapperProps {
   currentChapter: number;
 }
 
-// მცირე, მექანიკური "ხრახნის" კომპონენტი
+
 const Screw = () => (
   <div className="w-2 h-2 rounded-full bg-[#2D3A33] border border-[#1A2520] shadow-inner relative flex items-center justify-center">
     <div className="w-full h-[1px] bg-[#1A2520] rotate-45"></div>
@@ -27,7 +27,6 @@ export default function NovelClientWrapper({ slug, chapters, currentChapter }: N
   const [jumpTo, setJumpTo] = useState('');
 
   useEffect(() => {
-    // Save last read
     localStorage.setItem('lastReadNovelChapter', slug);
   }, [slug]);
 

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { getBroadcastBySlug, getAllBroadcasts } from '@/lib/mdx';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { mdxComponents } from '@/components/MDXComponents';
@@ -13,6 +14,40 @@ export async function generateStaticParams() {
     return broadcasts.map((b) => ({
         slug: b.slug,
     }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const resolvedParams = await params;
+    const broadcast = getBroadcastBySlug(resolvedParams.slug);
+
+    if (!broadcast) {
+        return { title: 'Dialogue Not Found' };
+    }
+
+    const baseUrl = 'https://almost-another-articles.com';
+    const title = broadcast.frontmatter?.title || broadcast.slug;
+    const description = broadcast.frontmatter?.description || 'Read the full dialogue.';
+    const url = `${baseUrl}/dialogues/${broadcast.slug}`;
+    const imagePath = broadcast.ogImage || broadcast.frontmatter?.ogImage || '';
+    const imageUrl = imagePath ? (imagePath.startsWith('http') ? imagePath : `${baseUrl}${imagePath}`) : '';
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: 'article',
+            url,
+            images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : [],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: imageUrl ? [imageUrl] : [],
+        },
+    };
 }
 
 export default async function BroadcastPage({ params }: { params: Promise<{ slug: string }> }) {

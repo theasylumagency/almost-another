@@ -7,6 +7,7 @@ import { mdxComponents } from '@/components/MDXComponents';
 import NovelClientWrapper from './NovelClientWrapper';
 import Link from 'next/link';
 import Image from 'next/image';
+import ShareButtons from '@/components/ShareButtons';
 
 export async function generateStaticParams() {
   const chapters = getNovelChapters();
@@ -30,8 +31,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = `Chapter ${chapter.chapterNumber}: ${chapter.title} | ${chapter.bookTitle}`;
   const description = chapter.description || 'Read the chapter.';
 
-  const imagePath = chapter.coverImage || '';
-  const imageUrl = imagePath ? (imagePath.startsWith('http') ? imagePath : `${baseUrl}/novel_images/archive/${imagePath.replace(/^\//, '')}`) : '';
+  const imagePath = chapter.ogImage || chapter.coverImage || '';
+  const imageUrl = imagePath ? (imagePath.startsWith('http') ? imagePath : `${baseUrl}${imagePath.startsWith('/') ? imagePath : `/novel_images/archive/${imagePath.replace(/^\//, '')}`}`) : '';
 
   return {
     title,
@@ -64,10 +65,8 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
   const allChapters = getNovelChapters();
   const linkedBroadcast = chapter.linked_broadcast ? getLinkedBroadcast(chapter.linked_broadcast as string) : null;
 
-  // ვიპოვოთ წინა და შემდეგი თავები ახალი ნავიგაციისთვის
   const prevChapter = allChapters.find(c => c.chapterNumber === chapter.chapterNumber - 1);
   const nextChapter = allChapters.find(c => c.chapterNumber === chapter.chapterNumber + 1);
-  // Custom MDX Components for this specific page injection
   const novelMdxComponents = {
     ...mdxComponents,
     SketchImage: () => (
@@ -99,6 +98,10 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
 
       {/* Main Reading Column */}
       <article className="flex-1 w-full max-w-3xl mx-auto px-6 pt-24 md:pt-32 pb-32 relative z-20 xl:mx-auto">
+
+        <div className="absolute top-0 -left-6 md:-left-12 lg:-left-16 xl:-left-24 h-full hidden md:block">
+          <ShareButtons title={`Chapter ${chapter.chapterNumber}: ${chapter.title}`} isDesktop={true} className="sticky top-32 flex flex-col items-center gap-6 py-4 w-12 border-l border-white/10" />
+        </div>
 
         <header className="mb-24 text-center md:text-left border-b border-white/10 pb-16">
           <span className="block font-mono text-[10px] tracking-widest text-accent uppercase mb-6">
@@ -161,6 +164,8 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
             </div>
           )}
         </div>
+
+        <ShareButtons title={`Chapter ${chapter.chapterNumber}: ${chapter.title}`} isDesktop={false} className="md:hidden flex items-center justify-center gap-6 mt-16 mb-8 border-t border-white/10 pt-8 w-full relative z-20" />
 
         {/* End of chapter marker & Navigation (ჩამოვიდა სულ ბოლოში) */}
         <div className="mt-20 border-t border-white/10 pt-12 flex flex-col items-center justify-center w-full relative z-20">
@@ -230,9 +235,11 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
               Security Prefecture Archive
             </span>
             <div className="bg-zinc-900 border border-white/5 relative p-2 shadow-2xl transition-transform group-hover:scale-[1.02]">
-              <img
+              <Image
                 src={`/novel_images/archive/${chapter.coverImage}`}
                 alt="Decrypted Archive"
+                width={1200}
+                height={630}
                 className="w-full h-auto object-contain border border-white/5 opacity-80 group-hover:opacity-100 transition-opacity"
               />
               <div className="absolute top-4 right-4 bg-black/80 px-2 py-1 font-mono text-[9px] text-red-500 uppercase tracking-widest border border-red-500/30">
