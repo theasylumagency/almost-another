@@ -131,7 +131,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         <div className="container mx-auto px-6 max-w-3xl mt-12 relative z-20">
           <div className="absolute top-0 -left-6 md:-left-12 lg:-left-20 xl:-left-24 h-full hidden md:block">
-            <ShareButtons title={article.title} isDesktop={true} className="sticky top-1/3 flex flex-col items-center gap-6 py-4 w-12 border-l border-white/10" />
+            <ShareButtons title={article.title} description={article.description} isDesktop={true} className="sticky top-1/3 flex flex-col items-center gap-6 py-4 w-12 border-l border-white/10" />
           </div>
 
           {(!article.imageWide && !article.imageSquare) && (
@@ -154,7 +154,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             <MDXRemote source={article.content} components={mdxComponents} />
           </div>
 
-          <ShareButtons title={article.title} isDesktop={false} className="md:hidden flex items-center justify-center gap-6 mt-16 border-t border-outline-variant/20 pt-8" />
+          <ShareButtons title={article.title} description={article.description} isDesktop={false} className="md:hidden flex items-center justify-center gap-6 mt-16 border-t border-outline-variant/20 pt-8" />
 
           {/* Donation / Support block */}
           <section className="max-w-3xl mx-auto my-16 p-8 sm:p-10 bg-[#1A1A1A] rounded-2xl border border-white/5 shadow-2xl relative z-20">

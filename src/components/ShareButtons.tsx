@@ -5,11 +5,12 @@ import { useEffect, useState } from "react";
 
 interface ShareButtonsProps {
   title: string;
+  description?: string;
   className?: string;
   isDesktop?: boolean;
 }
 
-export default function ShareButtons({ title, className = "", isDesktop = false }: ShareButtonsProps) {
+export default function ShareButtons({ title, description, className = "", isDesktop = false }: ShareButtonsProps) {
   const [url, setUrl] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -18,7 +19,7 @@ export default function ShareButtons({ title, className = "", isDesktop = false 
     setUrl(window.location.href);
   }, []);
 
-  const shareText = encodeURIComponent(title);
+  const shareText = encodeURIComponent(description ? `${title}\n\n${description}` : title);
   const shareUrl = encodeURIComponent(url);
 
   const twitterUrl = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`;

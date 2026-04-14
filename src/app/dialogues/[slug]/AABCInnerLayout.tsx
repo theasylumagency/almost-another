@@ -54,7 +54,7 @@ export default function AABCInnerLayout({
                 {/* LEFT COLUMN: CONTENT */}
                 <div className="lg:col-span-8 relative">
                     <div className="absolute top-0 -left-4 md:-left-8 lg:-left-12 h-full hidden md:block">
-                        <ShareButtons title={frontmatter.title} isDesktop={true} className="sticky top-32 flex flex-col items-center gap-6 py-4 w-12 border-l border-white/10" />
+                        <ShareButtons title={frontmatter.title} description={frontmatter.description} isDesktop={true} className="sticky top-32 flex flex-col items-center gap-6 py-4 w-12 border-l border-white/10" />
                     </div>
 
                     {/* HEADER & PLAYER */}
@@ -135,7 +135,7 @@ export default function AABCInnerLayout({
                         </div>
                     )}
 
-                    <ShareButtons title={frontmatter.title} isDesktop={false} className="md:hidden flex items-center justify-center gap-6 mb-24 border-t border-white/10 pt-8" />
+                    <ShareButtons title={frontmatter.title} description={frontmatter.description} isDesktop={false} className="md:hidden flex items-center justify-center gap-6 mb-24 border-t border-white/10 pt-8" />
                 </div>
 
                 {/* RIGHT COLUMN: SURVEILLANCE DOSSIER */}
