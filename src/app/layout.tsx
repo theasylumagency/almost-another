@@ -21,7 +21,7 @@ const notoSerif = Noto_Serif({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://almost-another-articles.com'),
+  metadataBase: new URL('https://almostanother.com'),
   title: {
     default: 'Almost Another',
     template: '%s | Almost Another',
