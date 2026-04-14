@@ -100,7 +100,7 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
       <article className="flex-1 w-full max-w-3xl mx-auto px-6 pt-24 md:pt-32 pb-32 relative z-20 xl:mx-auto">
 
         <div className="absolute top-0 -left-6 md:-left-12 lg:-left-16 xl:-left-24 h-full hidden md:block">
-          <ShareButtons title={`Chapter ${chapter.chapterNumber}: ${chapter.title}`} description={chapter.description} isDesktop={true} className="sticky top-32 flex flex-col items-center gap-6 py-4 w-12 border-l border-white/10" />
+          <ShareButtons title={`Chapter ${chapter.chapterNumber}: ${chapter.title}`} isDesktop={true} className="sticky top-32 flex flex-col items-center gap-6 py-4 w-12 border-l border-white/10" />
         </div>
 
         <header className="mb-24 text-center md:text-left border-b border-white/10 pb-16">
@@ -165,7 +165,7 @@ export default async function NovelChapterPage({ params }: { params: Promise<{ s
           )}
         </div>
 
-        <ShareButtons title={`Chapter ${chapter.chapterNumber}: ${chapter.title}`} description={chapter.description} isDesktop={false} className="md:hidden flex items-center justify-center gap-6 mt-16 mb-8 border-t border-white/10 pt-8 w-full relative z-20" />
+        <ShareButtons title={`Chapter ${chapter.chapterNumber}: ${chapter.title}`} isDesktop={false} className="md:hidden flex items-center justify-center gap-6 mt-16 mb-8 border-t border-white/10 pt-8 w-full relative z-20" />
 
         {/* End of chapter marker & Navigation (ჩამოვიდა სულ ბოლოში) */}
         <div className="mt-20 border-t border-white/10 pt-12 flex flex-col items-center justify-center w-full relative z-20">
