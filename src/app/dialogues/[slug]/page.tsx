@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         return { title: 'Dialogue Not Found' };
     }
 
-    const baseUrl = 'https://almostanothercom';
+    const baseUrl = 'https://almostanother.com';
     const title = broadcast.frontmatter?.title || 'AABC Dialogues';
     const description = broadcast.frontmatter?.description || 'Read the full dialogue.';
     const url = `${baseUrl}/dialogues/${broadcast.slug}`;

@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!article) return { title: 'Article Not Found' };
 
-  const baseUrl = 'https://almostanothercom';
+  const baseUrl = 'https://almostanother.com';
   const url = `${baseUrl}/articles/${article.slug}`;
   const title = `${article.title} | Breaking The Paradigm`;
   const description = article.description || article.subtitle || 'Read the full article';
