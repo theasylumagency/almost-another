@@ -29,9 +29,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!article) return { title: 'Article Not Found' };
 
-  const baseUrl = 'https://almost-another-articles.com';
+  const baseUrl = 'https://almostanothercom';
   const url = `${baseUrl}/articles/${article.slug}`;
-  const title = `${article.title} | THE BRUTALIST SCHOLAR`;
+  const title = `${article.title} | Breaking The Paradigm`;
   const description = article.description || article.subtitle || 'Read the full article';
 
   const imagePath = article.ogImage || article.imageWide || article.imageSquare || '';

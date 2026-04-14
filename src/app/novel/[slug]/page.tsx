@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
-  const baseUrl = 'https://almost-another-articles.com';
+  const baseUrl = 'https://almostanothercom';
   const url = `${baseUrl}/novel/${chapter.slug}`;
   const title = `Chapter ${chapter.chapterNumber}: ${chapter.title} | ${chapter.bookTitle}`;
   const description = chapter.description || 'Read the chapter.';

@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         return { title: 'Dialogue Not Found' };
     }
 
-    const baseUrl = 'https://almost-another-articles.com';
-    const title = broadcast.frontmatter?.title || broadcast.slug;
+    const baseUrl = 'https://almostanothercom';
+    const title = broadcast.frontmatter?.title || 'AABC Dialogues';
     const description = broadcast.frontmatter?.description || 'Read the full dialogue.';
     const url = `${baseUrl}/dialogues/${broadcast.slug}`;
     const imagePath = broadcast.ogImage || broadcast.frontmatter?.ogImage || '';
@@ -86,7 +86,7 @@ export default async function BroadcastPage({ params }: { params: Promise<{ slug
 
         const match = filename.match(/_([clr])\.[a-zA-Z0-9]+$/i);
         const layout = match ? match[1].toLowerCase() : 'c';
-        
+
         return <AABCInterviewImage src={`/aabc_images/${resolvedParams.slug}/${filename}`} layout={layout} alt={`Interview Image ${index}`} />;
     };
 
@@ -94,12 +94,12 @@ export default async function BroadcastPage({ params }: { params: Promise<{ slug
 
     // Smart dialogue parsing + handle next-mdx-remote dropping evaluated JSX props
     const contentStringifiedProps = broadcast.content.replace(/<InterviewImage\s+index=\{([0-9]+)\}\s*\/>/g, '<InterviewImage index="$1" />');
-    
+
     // Parse into contiguous dialogue blocks to handle multi-paragraph speeches
     let blocks = contentStringifiedProps.split(/\r?\n\r?\n/);
     let combinedContent = [];
     let currentDialogue: { speaker: string, text: string } | null = null;
-    
+
     for (let block of blocks) {
         // If it starts with JSX, clear dialogue tracker to prevent wrapping images
         if (block.trim().startsWith('<')) {
@@ -110,7 +110,7 @@ export default async function BroadcastPage({ params }: { params: Promise<{ slug
             combinedContent.push(block);
             continue;
         }
-    
+
         const dialogueMatch = block.trim().match(/^([A-Za-z0-9\s]+):\s+([\s\S]+)$/);
         // Exclude things like "http: //" or "Note: " by capping speaker length
         if (dialogueMatch && dialogueMatch[1].length < 25) {
@@ -132,7 +132,7 @@ export default async function BroadcastPage({ params }: { params: Promise<{ slug
     if (currentDialogue) {
         combinedContent.push(`<Dialogue speaker="${currentDialogue.speaker}" format="${format}">\n\n${currentDialogue.text}\n\n</Dialogue>`);
     }
-    
+
     const transformedContent = combinedContent.join('\n\n');
 
     return (
