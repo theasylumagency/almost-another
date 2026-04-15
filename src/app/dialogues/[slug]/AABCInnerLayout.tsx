@@ -77,7 +77,7 @@ export default function AABCInnerLayout({
                             {frontmatter.description}
                         </p>
 
-                        {/* Player */}
+                        {/* Player 
                         <div className="flex items-center gap-6 p-8 border outline outline-1 outline-white/10 bg-black group relative overflow-hidden">
                             <button
                                 onClick={() => setIsPlaying(!isPlaying)}
@@ -107,6 +107,7 @@ export default function AABCInnerLayout({
                                 </div>
                             </div>
                         </div>
+                        */}
                     </header>
 
                     {/* THE TRANSCRIPT / TEXT */}
