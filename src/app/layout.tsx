@@ -64,6 +64,7 @@ export default function RootLayout({
     >
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet" />
+        <link rel="alternate" type="application/rss+xml" title="Almost Another Feed" href="https://almostanother.com/feed.xml" />
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-Y3CGNV7TRN" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`

@@ -13,6 +13,13 @@ export type BroadcastData = {
     content: string;
     ogImage?: string;
 };
+export type LinkedBroadcastData = Record<string, unknown> & {
+    slug: string;
+    title?: string;
+    description?: string;
+    author?: string;
+    target_chapter?: string;
+};
 
 function resolveBroadcastOgImage(slug: string, data: Record<string, unknown>) {
     const raw = typeof data.og_image === 'string' ? data.og_image : (typeof data.ogImage === 'string' ? data.ogImage : '');
@@ -39,7 +46,7 @@ function resolveBroadcastOgImage(slug: string, data: Record<string, unknown>) {
     }
 }
 
-export function getLinkedBroadcast(broadcastSlug: string) {
+export function getLinkedBroadcast(broadcastSlug: string): LinkedBroadcastData | null {
     try {
         const fullPath = path.join(BROADCASTS_PATH, `${broadcastSlug}.mdx`);
 
@@ -50,7 +57,7 @@ export function getLinkedBroadcast(broadcastSlug: string) {
 
         const fileContents = fs.readFileSync(fullPath, 'utf8');
         const { data } = matter(fileContents);
-        return { slug: broadcastSlug, ...data };
+        return { slug: broadcastSlug, ...(data as Record<string, unknown>) };
     } catch (error) {
         console.error("Broadcast read error:", error);
         return null;

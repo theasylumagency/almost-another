@@ -13,13 +13,33 @@ export interface ArticleData {
   imageSquare?: string;
   ogImage?: string;
   linked_broadcast?: string;
+  tags: string[];
+  relatedSlugs: string[];
+  wordCount: number;
+  readingTime: string;
   content: string;
+}
+
+export interface LinkedBroadcastData extends Record<string, unknown> {
+  slug: string;
+  title?: string;
+  description?: string;
+  author?: string;
+  target_chapter?: string;
 }
 
 const contentDir = path.join(process.cwd(), 'src/content/editorials');
 const imagesDir = path.join(process.cwd(), 'public/images');
-const EDITORIALS_PATH = path.join(process.cwd(), 'src/content/editorials');
 const BROADCASTS_PATH = path.join(process.cwd(), 'src/content/broadcast');
+
+const STOPWORDS = new Set([
+  'about', 'after', 'again', 'against', 'almost', 'another', 'around', 'because',
+  'before', 'being', 'between', 'could', 'first', 'from', 'have', 'history', 'into',
+  'just', 'like', 'more', 'most', 'other', 'over', 'same', 'some', 'than', 'that',
+  'their', 'there', 'these', 'they', 'this', 'those', 'through', 'under', 'very',
+  'what', 'when', 'where', 'which', 'while', 'with', 'would', 'your',
+]);
+
 function resolveImages(prefix: string) {
   if (!prefix) return { imageWide: '', imageSquare: '' };
 
@@ -56,14 +76,104 @@ function resolveEditorialOgImage(data: Record<string, unknown>) {
   const { imageWide, imageSquare } = resolveImages(fallback);
   return imageWide || imageSquare || '';
 }
-export function getLinkedBroadcast(broadcastSlug: string): Record<string, any> | null {
+
+function toStringArray(value: unknown) {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => (typeof item === 'string' ? item.trim() : ''))
+      .filter(Boolean);
+  }
+
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+function calculateReadingStats(content: string) {
+  const trimmed = content.trim();
+  const wordCount = trimmed ? trimmed.split(/\s+/).length : 0;
+  const minutes = Math.max(1, Math.ceil(wordCount / 220));
+
+  return {
+    wordCount,
+    readingTime: `${minutes} min read`,
+  };
+}
+
+function tokenizeArticle(article: Pick<ArticleData, 'title' | 'subtitle' | 'description' | 'tags'>) {
+  const content = [
+    article.title,
+    article.subtitle || '',
+    article.description,
+    article.tags.join(' '),
+  ]
+    .join(' ')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ');
+
+  return new Set(
+    content
+      .split(/\s+/)
+      .map((token) => token.trim())
+      .filter((token) => token.length > 3 && !STOPWORDS.has(token))
+  );
+}
+
+function getArticleMatchScore(baseArticle: ArticleData, candidate: ArticleData) {
+  let score = 0;
+
+  if (baseArticle.relatedSlugs.includes(candidate.slug)) score += 60;
+  if (candidate.relatedSlugs.includes(baseArticle.slug)) score += 30;
+
+  if (
+    baseArticle.linked_broadcast &&
+    candidate.linked_broadcast &&
+    baseArticle.linked_broadcast === candidate.linked_broadcast
+  ) {
+    score += 25;
+  }
+
+  const baseTags = new Set(baseArticle.tags.map((tag) => tag.toLowerCase()));
+  const sharedTags = candidate.tags.filter((tag) => baseTags.has(tag.toLowerCase())).length;
+  score += sharedTags * 10;
+
+  const baseTokens = tokenizeArticle(baseArticle);
+  const candidateTokens = tokenizeArticle(candidate);
+  let tokenOverlap = 0;
+
+  candidateTokens.forEach((token) => {
+    if (baseTokens.has(token)) tokenOverlap += 1;
+  });
+
+  score += Math.min(tokenOverlap, 8) * 3;
+
+  const baseDate = Date.parse(baseArticle.date);
+  const candidateDate = Date.parse(candidate.date);
+
+  if (Number.isFinite(baseDate) && Number.isFinite(candidateDate)) {
+    const dayDelta = Math.abs(baseDate - candidateDate) / (1000 * 60 * 60 * 24);
+    score += Math.max(0, 8 - Math.floor(dayDelta / 45));
+  }
+
+  return score;
+}
+
+export function getLinkedBroadcast(broadcastSlug: string): LinkedBroadcastData | null {
   try {
     const fullPath = path.join(BROADCASTS_PATH, `${broadcastSlug}.mdx`);
     if (!fs.existsSync(fullPath)) return null;
 
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data } = matter(fileContents);
-    return { slug: broadcastSlug, ...data };
+    return {
+      slug: broadcastSlug,
+      ...(data as Record<string, unknown>),
+    };
   } catch (error) {
     console.error("Broadcast not found:", error);
     return null;
@@ -82,6 +192,7 @@ export function getArticles(): ArticleData[] {
       const matterResult = matter(fileContents);
       const { imageWide, imageSquare } = resolveImages(matterResult.data.image || '');
       const ogImage = resolveEditorialOgImage(matterResult.data);
+      const stats = calculateReadingStats(matterResult.content);
 
       return {
         slug,
@@ -94,6 +205,10 @@ export function getArticles(): ArticleData[] {
         imageSquare,
         ogImage,
         linked_broadcast: matterResult.data.linked_broadcast || '',
+        tags: toStringArray(matterResult.data.tags),
+        relatedSlugs: toStringArray(matterResult.data.related_slugs),
+        wordCount: stats.wordCount,
+        readingTime: stats.readingTime,
         content: matterResult.content,
       };
     });
@@ -115,6 +230,7 @@ export function getArticleBySlug(slug: string): ArticleData | null {
     const matterResult = matter(fileContents);
     const { imageWide, imageSquare } = resolveImages(matterResult.data.image || '');
     const ogImage = resolveEditorialOgImage(matterResult.data);
+    const stats = calculateReadingStats(matterResult.content);
 
     return {
       slug,
@@ -127,9 +243,28 @@ export function getArticleBySlug(slug: string): ArticleData | null {
       imageSquare,
       ogImage,
       linked_broadcast: matterResult.data.linked_broadcast || '',
+      tags: toStringArray(matterResult.data.tags),
+      relatedSlugs: toStringArray(matterResult.data.related_slugs),
+      wordCount: stats.wordCount,
+      readingTime: stats.readingTime,
       content: matterResult.content,
     };
-  } catch (e) {
+  } catch {
     return null;
   }
+}
+
+export function getRelatedArticles(article: ArticleData, limit = 3) {
+  return getArticles()
+    .filter((candidate) => candidate.slug !== article.slug)
+    .map((candidate) => ({
+      article: candidate,
+      score: getArticleMatchScore(article, candidate),
+    }))
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return Date.parse(b.article.date) - Date.parse(a.article.date);
+    })
+    .slice(0, limit)
+    .map(({ article: relatedArticle }) => relatedArticle);
 }

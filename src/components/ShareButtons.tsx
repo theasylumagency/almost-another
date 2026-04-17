@@ -1,7 +1,11 @@
 "use client";
 
-import { Share2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Copy, Share2 } from "lucide-react";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { trackEvent } from "@/lib/analytics";
+
+const SITE_URL = "https://almostanother.com";
 
 interface ShareButtonsProps {
   title: string;
@@ -9,79 +13,119 @@ interface ShareButtonsProps {
   isDesktop?: boolean;
 }
 
-export default function ShareButtons({ title, className = "", isDesktop = false }: ShareButtonsProps) {
-  const [url, setUrl] = useState("");
+export default function ShareButtons({
+  title,
+  className = "",
+  isDesktop = false,
+}: ShareButtonsProps) {
+  const pathname = usePathname();
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    // eslint-disable-next-line
-    setUrl(window.location.href);
-  }, []);
-
+  const url = `${SITE_URL}${pathname || ""}`;
   const shareText = encodeURIComponent(title);
   const shareUrl = encodeURIComponent(url);
-
-  const twitterUrl = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`;
-  const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`;
-  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+  const xUrl = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`;
+  const redditUrl = `https://www.reddit.com/submit?url=${shareUrl}&title=${shareText}`;
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {}
+      trackEvent("share_clicked", {
+        platform: "copy",
+        title,
+      });
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Swallow clipboard errors and leave the UI unchanged.
+    }
   };
 
-  const buttonClass = "text-zinc-500 hover:text-zinc-300 transition-colors flex flex-col items-center gap-1";
+  const handleNativeShare = async () => {
+    if (typeof navigator.share !== "function") {
+      await handleCopy();
+      return;
+    }
 
-  const content = (
-    <>
-      {isDesktop && (
-        <>
-          <span className="font-label text-[10px] tracking-widest text-zinc-500 uppercase rotate-180" style={{ writingMode: 'vertical-rl' }}>Share</span>
-          <div className="w-[1px] h-12 bg-outline-variant opacity-20"></div>
-        </>
-      )}
-      {!isDesktop && (
-        <span className="font-label text-[10px] tracking-widest text-zinc-500 uppercase">Share</span>
-      )}
-      
-      <a href={twitterUrl} target="_blank" rel="noopener noreferrer" className={buttonClass} aria-label="Share on X (Twitter)">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-          <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
-        </svg>
-        {isDesktop && <span className="font-label text-[8px] uppercase tracking-tighter text-zinc-600">X</span>}
-      </a>
-      
-      <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" className={buttonClass} aria-label="Share on LinkedIn">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-        </svg>
-        {isDesktop && <span className="font-label text-[8px] uppercase tracking-tighter text-zinc-600">LI</span>}
-      </a>
-      
-      <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className={buttonClass} aria-label="Share on Facebook">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-          <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103v3.328h-2.328c-2.111 0-2.312.623-2.312 2.329v1.8h3.814l-.443 3.667h-3.371v7.98h-2.686z" />
-        </svg>
-        {isDesktop && <span className="font-label text-[8px] uppercase tracking-tighter text-zinc-600">FB</span>}
-      </a>
-      
-      <button onClick={handleCopy} className={buttonClass} title="Copy link" aria-label="Copy link">
-        <Share2 size={20} className={copied ? "text-primary transition-colors" : ""} />
-        {isDesktop && (
-          <span className={`font-label text-[8px] uppercase tracking-tighter transition-colors ${copied ? "text-primary" : "text-zinc-600"}`}>
-            {copied ? "Copied" : "Copy"}
-          </span>
-        )}
-      </button>
-    </>
-  );
+    try {
+      await navigator.share({ title, url });
+      trackEvent("share_clicked", {
+        platform: "native",
+        title,
+      });
+    } catch {
+      // Dismissal should not throw visible UI errors.
+    }
+  };
+
+  const buttonClass =
+    "text-zinc-500 hover:text-zinc-200 transition-colors flex flex-col items-center gap-1";
+  const labelClass = "font-label text-[8px] uppercase tracking-[0.22em] text-zinc-600";
 
   return (
     <div className={className}>
-      {content}
+      {isDesktop ? (
+        <>
+          <span
+            className="font-label text-[10px] uppercase tracking-widest text-zinc-500 rotate-180"
+            style={{ writingMode: "vertical-rl" }}
+          >
+            Share
+          </span>
+          <div className="h-12 w-px bg-outline-variant opacity-20"></div>
+        </>
+      ) : (
+        <span className="font-label text-[10px] uppercase tracking-widest text-zinc-500">
+          Share
+        </span>
+      )}
+
+      {!isDesktop && (
+        <button
+          onClick={handleNativeShare}
+          className={buttonClass}
+          title="Share"
+          aria-label="Share this page"
+        >
+          <Share2 size={20} />
+          <span className={labelClass}>Share</span>
+        </button>
+      )}
+
+      <a
+        href={redditUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={buttonClass}
+        aria-label="Share on Reddit"
+        onClick={() => trackEvent("share_clicked", { platform: "reddit", title })}
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+          <path d="M14.03 15.349c.666 0 1.208-.54 1.208-1.208 0-.667-.542-1.209-1.208-1.209-.668 0-1.209.542-1.209 1.209 0 .667.541 1.208 1.209 1.208Zm-4.06-2.417c-.667 0-1.208.542-1.208 1.209 0 .667.541 1.208 1.208 1.208.668 0 1.209-.54 1.209-1.208 0-.667-.541-1.209-1.209-1.209Zm4.961 5.04c-.913.911-2.659.986-3.85 0a.298.298 0 0 0-.42.42c1.435 1.19 3.52 1.115 4.69-.002a.297.297 0 1 0-.42-.418Zm6.726-6.092a2.123 2.123 0 0 0-3.64-1.476 9.92 9.92 0 0 0-5.728-1.835c-.272 0-.544.013-.812.035l.955-4.5 3.13.664a1.506 1.506 0 1 0 .127-.593l-3.42-.725a.297.297 0 0 0-.35.23l-1.03 4.86a9.96 9.96 0 0 0-5.522 1.86 2.12 2.12 0 0 0-3.598 1.52c0 .844.497 1.571 1.213 1.91-.038.243-.06.49-.06.741 0 3.323 3.71 6.03 8.275 6.03s8.274-2.707 8.274-6.03c0-.245-.02-.485-.055-.721a2.126 2.126 0 0 0 1.221-1.92Z" />
+        </svg>
+        <span className={labelClass}>Reddit</span>
+      </a>
+
+      <a
+        href={xUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={buttonClass}
+        aria-label="Share on X"
+        onClick={() => trackEvent("share_clicked", { platform: "x", title })}
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+          <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+        </svg>
+        <span className={labelClass}>X</span>
+      </a>
+
+      <button onClick={handleCopy} className={buttonClass} title="Copy link" aria-label="Copy link">
+        <Copy size={20} className={copied ? "text-primary transition-colors" : ""} />
+        <span className={`${labelClass} ${copied ? "text-primary" : ""}`}>
+          {copied ? "Copied" : "Copy"}
+        </span>
+      </button>
     </div>
   );
 }
