@@ -120,20 +120,31 @@ export default function AABCInnerLayout({
 
                     {/* CONTEXT EDITORIAL */}
                     {frontmatter.target_editorial && (
-                        <div className="p-8 md:p-12 border border-white/5 bg-[#0a0a0a] mb-24 outline outline-2 outline-transparent hover:outline-red-900/50 transition-all duration-700">
-                            <span className="font-mono text-[10px] tracking-[0.3em] uppercase mb-4 block text-red-600/50">
-                                [ CONTEXT: REALITY A EXTRACT ]
-                            </span>
-                            <p className="mb-6 text-zinc-400 font-light text-sm">
-                                Review the corresponding essay that stands alongside this intercept in the broader chronology.
-                            </p>
-                            <Link
-                                href={`/articles/${frontmatter.target_editorial}`}
-                                className="inline-flex items-center gap-2 text-xs font-mono tracking-widest uppercase transition-colors text-white hover:text-red-500"
-                            >
-                                Frame The Narrative <ArrowUpRight size={16} />
-                            </Link>
-                        </div>
+                        <Link href={`/articles/${frontmatter.target_editorial}`} className="block group mb-24 border border-white/10 bg-[#030303] overflow-hidden relative">
+                            {/* Hover revealing background */}
+                            <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                            <div className="absolute top-0 left-0 w-1 h-full bg-red-900 scale-y-0 origin-bottom group-hover:scale-y-100 transition-transform duration-500 ease-out z-10" />
+                            
+                            <div className="p-8 md:p-12 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse" />
+                                        <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-zinc-500">
+                                            REALITY A EXTRACT
+                                        </span>
+                                    </div>
+                                    <h3 className="font-didot italic text-3xl md:text-4xl lg:text-5xl text-zinc-400 group-hover:text-white transition-colors duration-500 mb-6">
+                                        Review The Target Editorial
+                                    </h3>
+                                    <p className="font-sans text-zinc-500 text-sm max-w-lg font-light group-hover:text-zinc-400 transition-colors">
+                                        Access the main thesis. Review the corresponding essay that stands alongside this intercept in the broader chronology.
+                                    </p>
+                                </div>
+                                <div className="flex items-center justify-center w-16 h-16 rounded-none border border-white/20 text-zinc-400 group-hover:bg-white group-hover:text-black group-hover:border-white transition-all duration-500 md:ml-8 flex-shrink-0">
+                                    <ArrowUpRight size={24} className="group-hover:rotate-45 transition-transform duration-500" />
+                                </div>
+                            </div>
+                        </Link>
                     )}
 
                     <ShareButtons title={frontmatter.title} isDesktop={false} className="md:hidden flex items-center justify-center gap-6 mb-24 border-t border-white/10 pt-8" />
