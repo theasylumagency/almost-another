@@ -64,3 +64,12 @@ export type TerritoryGroup = {
     id: string;
     members: string[];
 };
+
+export type TerritoryProfile = {
+    id: string;
+    label: string;
+    capital: string;
+    republicSince: number | null;
+    status: string;
+    summary: string;
+};

@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import type { MapRegion, TimelineEntry } from '@/content/terminal/terminal.types';
+import { getTerritoryProfile } from '@/content/terminal/territory-profiles';
 import CartographyMap from './CartographyMap';
 import TimelineSlider from './TimelineSlider';
 
@@ -18,8 +20,13 @@ export default function CartographyPanel({
     activeYear,
     onYearChange,
 }: Props) {
+    const [selectedTerritoryId, setSelectedTerritoryId] = useState<string | null>(null);
+
     const activeEntry =
         entries.find((entry) => entry.year === activeYear) ?? entries[0];
+    const selectedTerritory = selectedTerritoryId
+        ? getTerritoryProfile(selectedTerritoryId)
+        : null;
 
     if (!activeEntry) return null;
 
@@ -29,6 +36,8 @@ export default function CartographyPanel({
                 <CartographyMap
                     regions={regions}
                     activeRegionIds={activeEntry.affectedRegions}
+                    selectedTerritoryId={selectedTerritoryId}
+                    onSelectTerritory={setSelectedTerritoryId}
                 />
                 <TimelineSlider
                     entries={entries}
@@ -52,6 +61,81 @@ export default function CartographyPanel({
                     <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-zinc-500 border border-white/10 bg-black px-2 py-1">
                         TL: {activeEntry.year}
                     </div>
+                </div>
+
+                <div className="mb-8 border border-amber-500/20 bg-amber-500/[0.05] p-4 md:p-5 relative">
+                    <span className="absolute -top-2 left-3 bg-[#030303] px-2 font-mono text-[9px] uppercase tracking-[0.2em] text-amber-300/70">
+                        Territory Dossier
+                    </span>
+
+                    {selectedTerritory ? (
+                        <>
+                            <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
+                                <div>
+                                    <h3 className="text-xl font-medium uppercase tracking-[0.12em] text-white">
+                                        {selectedTerritory.label}
+                                    </h3>
+                                    <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.24em] text-amber-200/70">
+                                        {selectedTerritory.status}
+                                    </p>
+                                </div>
+
+                                <div className="border border-amber-500/20 bg-black px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.24em] text-amber-200/80">
+                                    ID: {selectedTerritory.id}
+                                </div>
+                            </div>
+
+                            <dl className="grid gap-3 sm:grid-cols-2">
+                                <div className="border border-white/8 bg-black/40 px-3 py-2.5">
+                                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
+                                        Province
+                                    </dt>
+                                    <dd className="mt-1 text-sm text-zinc-200">
+                                        {selectedTerritory.label}
+                                    </dd>
+                                </div>
+
+                                <div className="border border-white/8 bg-black/40 px-3 py-2.5">
+                                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
+                                        Capital
+                                    </dt>
+                                    <dd className="mt-1 text-sm text-zinc-200">
+                                        {selectedTerritory.capital}
+                                    </dd>
+                                </div>
+
+                                <div className="border border-white/8 bg-black/40 px-3 py-2.5">
+                                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
+                                        Republic Since
+                                    </dt>
+                                    <dd className="mt-1 text-sm text-zinc-200">
+                                        {selectedTerritory.republicSince ?? 'Not indexed'}
+                                    </dd>
+                                </div>
+
+                                <div className="border border-white/8 bg-black/40 px-3 py-2.5">
+                                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
+                                        Status
+                                    </dt>
+                                    <dd className="mt-1 text-sm text-zinc-200">
+                                        {selectedTerritory.status}
+                                    </dd>
+                                </div>
+                            </dl>
+
+                            <p className="mt-4 text-sm leading-relaxed text-zinc-300 font-mono">
+                                {selectedTerritory.summary}
+                            </p>
+                        </>
+                    ) : (
+                        <div className="min-h-[180px] flex items-center border border-dashed border-white/10 bg-black/30 px-4 py-5">
+                            <p className="font-mono text-sm leading-relaxed text-zinc-400">
+                                Select any country on the map to inspect its province, capital,
+                                and republic status. This dossier remains separate from the
+                                timeline log.
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 <h2 className="mb-6 text-2xl font-medium tracking-wide text-white uppercase">
