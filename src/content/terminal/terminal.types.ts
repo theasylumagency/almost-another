@@ -20,6 +20,8 @@ export type DossierType =
     | 'incident'
     | 'place'
     | 'institution'
+    | 'state_form'
+    | 'lineage'
     | 'operation'
     | 'observation'
     | 'threat'
@@ -30,7 +32,18 @@ export type DossierStatus =
     | 'archived'
     | 'redacted'
     | 'leaked'
-    | 'sealed';
+    | 'sealed'
+    | 'restricted';
+
+export type DossierSection = {
+    title: string;
+    body: string;
+};
+
+export type DossierReference = {
+    label: string;
+    href: string;
+};
 
 export type Dossier = {
     id: string;
@@ -39,10 +52,18 @@ export type Dossier = {
     type: DossierType;
     status: DossierStatus;
     date: string;
+    classification?: string;
+
     summary: string;
-    excerpt: string;
+    strategicRole?: string;
+
     tags: string[];
-    related: TerminalLink[];
+    timelineYears?: number[];
+
+    sections: DossierSection[];
+
+    relatedDossiers?: DossierReference[];
+    relatedRoutes?: DossierReference[];
 };
 
 export type SignalClassification = 'open' | 'restricted' | 'uncertain';
