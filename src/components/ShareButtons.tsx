@@ -4,8 +4,7 @@ import { Copy, Share2 } from "lucide-react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
-
-const SITE_URL = "https://almostanother.com";
+import { SITE_URL } from "@/lib/site";
 
 interface ShareButtonsProps {
   title: string;

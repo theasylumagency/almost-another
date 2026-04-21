@@ -1,10 +1,9 @@
 import { getArticles } from '@/lib/articles';
 import { getAllBroadcasts } from '@/lib/mdx';
 import { getNovelChapters } from '@/lib/novels';
+import { SITE_DESCRIPTION, SITE_NAME, SITE_RSS_PATH, SITE_URL, buildAbsoluteUrl } from '@/lib/site';
 
 export const dynamic = 'force-static';
-
-const SITE_URL = 'https://almostanother.com';
 
 function escapeXml(value: string) {
   return value
@@ -79,11 +78,11 @@ export async function GET() {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Almost Another</title>
+    <title>${SITE_NAME}</title>
     <link>${SITE_URL}</link>
-    <description>Essays, dialogues, and chronicle entries from Almost Another.</description>
+    <description>${SITE_DESCRIPTION}</description>
     <language>en-us</language>
-    <atom:link href="${SITE_URL}/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="${buildAbsoluteUrl(SITE_RSS_PATH)}" rel="self" type="application/rss+xml" />
     ${items}
   </channel>
 </rss>`;

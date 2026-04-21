@@ -3,6 +3,14 @@ import { Inter, Noto_Serif, GFS_Didot } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import SystemDirectory from "@/components/navigation/SystemDirectory";
+import {
+  SITE_DESCRIPTION,
+  SITE_KEYWORDS,
+  SITE_NAME,
+  SITE_RSS_PATH,
+  SITE_URL,
+  buildAbsoluteUrl,
+} from "@/lib/site";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,34 +29,32 @@ const notoSerif = Noto_Serif({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Almost Another',
-    template: '%s | Almost Another',
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
   },
-  description:
-    'Essays, dialogues, and the chronicle of a parallel world.',
-  applicationName: 'Almost Another',
-  keywords: [
-    'essays',
-    'dialogues',
-    'novel',
-    'archive',
-    'parallel world',
-    'breaking the paradigm',
-    'almost another',
-  ],
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [...SITE_KEYWORDS],
+  alternates: {
+    canonical: '/',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: 'Almost Another',
-    description:
-      'Essays, dialogues, and the chronicle of a parallel world.',
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
     type: 'website',
-    siteName: 'Almost Another',
+    siteName: SITE_NAME,
+    url: '/',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Almost Another',
-    description:
-      'Essays, dialogues, and the chronicle of a parallel world.',
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
   },
 };
 
@@ -64,7 +70,7 @@ export default function RootLayout({
     >
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet" />
-        <link rel="alternate" type="application/rss+xml" title="Almost Another Feed" href="https://almostanother.com/feed.xml" />
+        <link rel="alternate" type="application/rss+xml" title={`${SITE_NAME} Feed`} href={buildAbsoluteUrl(SITE_RSS_PATH)} />
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-Y3CGNV7TRN" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`

@@ -1,9 +1,16 @@
+import type { Metadata } from 'next';
 import { getAllBroadcasts } from '@/lib/mdx';
 import AABCHubClient from './AABCHubClient';
 
-export const metadata = {
-  title: 'AABC | The Omniscient Protocol',
-  description: 'We watch the multiverse burn. We observe the spectacle of ambition, dogma, and ruin.',
+const description =
+  'AABC dialogues that answer the essays with adjacent voices, conflicts, and linked narrative branches.';
+
+export const metadata: Metadata = {
+  title: 'Dialogues',
+  description,
+  alternates: {
+    canonical: '/dialogues',
+  },
 };
 
 export default async function AABCHub() {

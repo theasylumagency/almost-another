@@ -1,29 +1,19 @@
-'use client';
+import type { Metadata } from 'next';
+import NovelHubRedirect from './NovelHubRedirect';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+export const metadata: Metadata = {
+  title: 'Chronicle',
+  description:
+    'Enter the parallel-world chronicle that extends the essays and dialogues into narrative form.',
+  alternates: {
+    canonical: '/novel/chapter-1',
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 export default function NovelHub() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Determine the last read chapter from local storage
-    const lastRead = localStorage.getItem('lastReadNovelChapter');
-    
-    if (lastRead) {
-      router.replace(`/novel/${lastRead}`);
-    } else {
-      router.replace('/novel/chapter-1');
-    }
-  }, [router]);
-
-  return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-      <Loader2 className="w-8 h-8 animate-spin text-accent mb-4" />
-      <p className="font-label text-xs tracking-[0.2em] uppercase text-zinc-500">
-        Accessing Sub-Level Archives...
-      </p>
-    </div>
-  );
+  return <NovelHubRedirect />;
 }

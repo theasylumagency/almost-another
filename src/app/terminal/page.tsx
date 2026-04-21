@@ -13,6 +13,9 @@ export const metadata: Metadata = {
     title: 'Terminal',
     description:
         'Restricted archive for cartography, prefecture dossiers, and signal theory.',
+    alternates: {
+        canonical: '/terminal',
+    },
 };
 
 function TerminalFallback() {

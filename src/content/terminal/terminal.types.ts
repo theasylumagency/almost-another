@@ -65,6 +65,11 @@ export type TerritoryGroup = {
     members: string[];
 };
 
+export type TerritoryReference = {
+    label: string;
+    href: string;
+};
+
 export type TerritoryProfile = {
     id: string;
     label: string;
@@ -72,4 +77,8 @@ export type TerritoryProfile = {
     republicSince: number | null;
     status: string;
     summary: string;
+    strategicRole?: string;
+    timelineYears: number[];
+    relatedDossiers: TerritoryReference[];
+    relatedRoutes: TerritoryReference[];
 };

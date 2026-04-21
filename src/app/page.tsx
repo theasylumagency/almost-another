@@ -1,9 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { getArticles } from '@/lib/articles';
 import { getAllBroadcasts } from '@/lib/mdx';
 import { getNovelChapters } from '@/lib/novels';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { SITE_DESCRIPTION } from '@/lib/site';
+
+export const metadata: Metadata = {
+  description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: '/',
+  },
+};
 
 const ROUTES = {
   essays: '/articles',

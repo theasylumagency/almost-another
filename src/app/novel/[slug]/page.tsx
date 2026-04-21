@@ -8,6 +8,7 @@ import NovelClientWrapper from './NovelClientWrapper';
 import Link from 'next/link';
 import Image from 'next/image';
 import ShareButtons from '@/components/ShareButtons';
+import { toAbsoluteUrl } from '@/lib/site';
 
 export async function generateStaticParams() {
   const chapters = getNovelChapters();
@@ -22,21 +23,28 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   if (!chapter) {
     return {
-      title: 'Chapter Not Found | Breaking the Paradigm',
+      title: 'Chapter Not Found',
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
-  const baseUrl = 'https://almostanother.com';
-  const url = `${baseUrl}/novel/${chapter.slug}`;
-  const title = `Chapter ${chapter.chapterNumber}: ${chapter.title} | ${chapter.bookTitle}`;
+  const url = `/novel/${chapter.slug}`;
+  const title = `Chapter ${chapter.chapterNumber}: ${chapter.title}`;
   const description = chapter.description || 'Read the chapter.';
-
-  const imagePath = chapter.ogImage || chapter.coverImage || '';
-  const imageUrl = imagePath ? (imagePath.startsWith('http') ? imagePath : `${baseUrl}${imagePath.startsWith('/') ? imagePath : `/novel_images/archive/${imagePath.replace(/^\//, '')}`}`) : '';
+  const imagePath = chapter.ogImage || chapter.coverImage
+    ? chapter.ogImage || `/novel_images/archive/${chapter.coverImage.replace(/^\//, '')}`
+    : '';
+  const imageUrl = toAbsoluteUrl(imagePath);
 
   return {
     title,
     description,
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
       title,
       description,

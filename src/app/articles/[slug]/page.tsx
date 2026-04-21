@@ -15,6 +15,7 @@ import { mdxComponents } from '@/components/MDXComponents';
 import { getArticleBySlug, getArticles, getRelatedArticles } from '@/lib/articles';
 import { getLinkedBroadcast } from '@/lib/mdx';
 import { getNovelChapterBySlug } from '@/lib/novels';
+import { toAbsoluteUrl, toValidDate } from '@/lib/site';
 
 export async function generateStaticParams() {
   const articles = getArticles();
@@ -32,23 +33,26 @@ export async function generateMetadata({
   const resolvedParams = await params;
   const article = getArticleBySlug(resolvedParams.slug);
 
-  if (!article) return { title: 'Article Not Found' };
+  if (!article) return { title: 'Article Not Found', robots: { index: false, follow: false } };
 
-  const baseUrl = 'https://almostanother.com';
-  const url = `${baseUrl}/articles/${article.slug}`;
-  const title = `${article.title} | Breaking The Paradigm`;
+  const url = `/articles/${article.slug}`;
+  const title = article.title;
   const description = article.description || article.subtitle || 'Read the full article';
-  const imagePath = article.ogImage || article.imageWide || article.imageSquare || '';
-  const imageUrl = imagePath ? (imagePath.startsWith('http') ? imagePath : `${baseUrl}${imagePath}`) : '';
+  const imageUrl = toAbsoluteUrl(article.ogImage || article.imageWide || article.imageSquare || '');
+  const publishedTime = toValidDate(article.date)?.toISOString();
 
   return {
     title,
     description,
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
       title,
       description,
       type: 'article',
       url,
+      publishedTime,
       images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : [],
       authors: [article.author],
     },

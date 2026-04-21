@@ -8,6 +8,7 @@ import { mdxComponents } from '@/components/MDXComponents';
 import AABCInnerLayout from './AABCInnerLayout';
 import AABCDialogue from '@/components/aabc/AABCDialogue';
 import AABCInterviewImage from '@/components/aabc/AABCInterviewImage';
+import { toAbsoluteUrl, toValidDate } from '@/lib/site';
 
 export async function generateStaticParams() {
     const broadcasts = getAllBroadcasts();
@@ -21,24 +22,27 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const broadcast = getBroadcastBySlug(resolvedParams.slug);
 
     if (!broadcast) {
-        return { title: 'Dialogue Not Found' };
+        return { title: 'Dialogue Not Found', robots: { index: false, follow: false } };
     }
 
-    const baseUrl = 'https://almostanother.com';
     const title = broadcast.frontmatter?.title || 'AABC Dialogues';
     const description = broadcast.frontmatter?.description || 'Read the full dialogue.';
-    const url = `${baseUrl}/dialogues/${broadcast.slug}`;
-    const imagePath = broadcast.ogImage || broadcast.frontmatter?.ogImage || '';
-    const imageUrl = imagePath ? (imagePath.startsWith('http') ? imagePath : `${baseUrl}${imagePath}`) : '';
+    const url = `/dialogues/${broadcast.slug}`;
+    const imageUrl = toAbsoluteUrl(broadcast.ogImage || broadcast.frontmatter?.ogImage || '');
+    const publishedTime = toValidDate(String(broadcast.frontmatter?.date ?? ''))?.toISOString();
 
     return {
         title,
         description,
+        alternates: {
+            canonical: url,
+        },
         openGraph: {
             title,
             description,
             type: 'article',
             url,
+            publishedTime,
             images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: title }] : [],
         },
         twitter: {

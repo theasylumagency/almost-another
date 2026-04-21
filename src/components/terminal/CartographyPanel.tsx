@@ -70,70 +70,133 @@ export default function CartographyPanel({
 
                     {selectedTerritory ? (
                         <>
-                            <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
+                            <div className="mb-3 flex items-center justify-between gap-3">
                                 <div>
-                                    <h3 className="text-xl font-medium uppercase tracking-[0.12em] text-white">
+                                    <div className="font-mono text-[10px] uppercase tracking-[0.28em] text-red-300/80">
+                                        Territory Dossier
+                                    </div>
+                                    <h3 className="mt-2 text-xl font-medium text-white">
                                         {selectedTerritory.label}
                                     </h3>
-                                    <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.24em] text-amber-200/70">
-                                        {selectedTerritory.status}
-                                    </p>
                                 </div>
 
-                                <div className="border border-amber-500/20 bg-black px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.24em] text-amber-200/80">
-                                    ID: {selectedTerritory.id}
+                                <span className="border border-white/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-400">
+                                    {selectedTerritory.status}
+                                </span>
+                            </div>
+
+                            <div className="mb-5 grid grid-cols-2 gap-3 text-sm text-zinc-300">
+                                <div className="border border-white/10 bg-white/[0.02] p-3">
+                                    <div className="mb-1 font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
+                                        ID
+                                    </div>
+                                    <div>{selectedTerritory.id}</div>
+                                </div>
+
+                                <div className="border border-white/10 bg-white/[0.02] p-3">
+                                    <div className="mb-1 font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
+                                        Capital
+                                    </div>
+                                    <div>{selectedTerritory.capital}</div>
+                                </div>
+
+                                <div className="border border-white/10 bg-white/[0.02] p-3">
+                                    <div className="mb-1 font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
+                                        Republic Since
+                                    </div>
+                                    <div>{selectedTerritory.republicSince ?? 'Not indexed'}</div>
+                                </div>
+
+                                <div className="border border-white/10 bg-white/[0.02] p-3">
+                                    <div className="mb-1 font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
+                                        Current Timeline Focus
+                                    </div>
+                                    <div>{activeEntry.year}</div>
                                 </div>
                             </div>
 
-                            <dl className="grid gap-3 sm:grid-cols-2">
-                                <div className="border border-white/8 bg-black/40 px-3 py-2.5">
-                                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
-                                        Province
-                                    </dt>
-                                    <dd className="mt-1 text-sm text-zinc-200">
-                                        {selectedTerritory.label}
-                                    </dd>
-                                </div>
-
-                                <div className="border border-white/8 bg-black/40 px-3 py-2.5">
-                                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
-                                        Capital
-                                    </dt>
-                                    <dd className="mt-1 text-sm text-zinc-200">
-                                        {selectedTerritory.capital}
-                                    </dd>
-                                </div>
-
-                                <div className="border border-white/8 bg-black/40 px-3 py-2.5">
-                                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
-                                        Republic Since
-                                    </dt>
-                                    <dd className="mt-1 text-sm text-zinc-200">
-                                        {selectedTerritory.republicSince ?? 'Not indexed'}
-                                    </dd>
-                                </div>
-
-                                <div className="border border-white/8 bg-black/40 px-3 py-2.5">
-                                    <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-zinc-500">
-                                        Status
-                                    </dt>
-                                    <dd className="mt-1 text-sm text-zinc-200">
-                                        {selectedTerritory.status}
-                                    </dd>
-                                </div>
-                            </dl>
-
-                            <p className="mt-4 text-sm leading-relaxed text-zinc-300 font-mono">
+                            <p className="mb-4 text-sm leading-7 text-zinc-300">
                                 {selectedTerritory.summary}
                             </p>
+
+                            <div className="mb-5 border-l border-red-500/30 pl-4 text-sm leading-7 text-zinc-400">
+                                {selectedTerritory.strategicRole}
+                            </div>
+
+                            <div className="mb-5">
+                                <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
+                                    Timeline Years
+                                </div>
+
+                                <div className="flex flex-wrap gap-2">
+                                    {selectedTerritory.timelineYears.length > 0 ? (
+                                        selectedTerritory.timelineYears.map((year) => (
+                                            <button
+                                                key={year}
+                                                type="button"
+                                                onClick={() => onYearChange(year)}
+                                                className={`border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.2em] ${year === activeEntry.year
+                                                        ? 'border-red-500/40 bg-red-500/10 text-red-200'
+                                                        : 'border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white'
+                                                    }`}
+                                            >
+                                                {year}
+                                            </button>
+                                        ))
+                                    ) : (
+                                        <span className="text-sm text-zinc-500">No indexed years yet.</span>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="mb-5">
+                                <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
+                                    Related Dossiers
+                                </div>
+
+                                <div className="flex flex-wrap gap-2">
+                                    {selectedTerritory.relatedDossiers.length > 0 ? (
+                                        selectedTerritory.relatedDossiers.map((item) => (
+                                            <Link
+                                                key={`${item.href}-${item.label}`}
+                                                href={item.href}
+                                                className="border border-white/10 bg-white/[0.03] px-3 py-2 text-xs uppercase tracking-[0.18em] text-zinc-300 transition-colors hover:border-white/20 hover:text-white"
+                                            >
+                                                {item.label}
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <span className="text-sm text-zinc-500">No linked dossiers yet.</span>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div>
+                                <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.24em] text-zinc-500">
+                                    Cross-References
+                                </div>
+
+                                <div className="flex flex-wrap gap-2">
+                                    {selectedTerritory.relatedRoutes.length > 0 ? (
+                                        selectedTerritory.relatedRoutes.map((item) => (
+                                            <Link
+                                                key={`${item.href}-${item.label}`}
+                                                href={item.href}
+                                                className="border border-white/10 bg-white/[0.03] px-3 py-2 text-xs uppercase tracking-[0.18em] text-zinc-300 transition-colors hover:border-white/20 hover:text-white"
+                                            >
+                                                {item.label}
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <span className="text-sm text-zinc-500">No cross-references yet.</span>
+                                    )}
+                                </div>
+                            </div>
                         </>
                     ) : (
-                        <div className="min-h-[180px] flex items-center border border-dashed border-white/10 bg-black/30 px-4 py-5">
-                            <p className="font-mono text-sm leading-relaxed text-zinc-400">
-                                Select any country on the map to inspect its province, capital,
-                                and republic status. This dossier remains separate from the
-                                timeline log.
-                            </p>
+                        <div className="text-sm leading-7 text-zinc-400">
+                            Select any country on the map to inspect its territorial dossier, linked years,
+                            and related archive files.
                         </div>
                     )}
                 </div>

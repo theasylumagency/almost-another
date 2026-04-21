@@ -1,10 +1,22 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { ArrowRight, BookOpenText, RadioTower, Rss } from 'lucide-react';
 import ArticleCard from '@/components/ArticleCard';
 import { getArticles } from '@/lib/articles';
 import { getAllBroadcasts } from '@/lib/mdx';
 import { getNovelChapters } from '@/lib/novels';
+
+const description =
+  'Browse the editorial archive of essays, then move laterally into related dialogues and chapters.';
+
+export const metadata: Metadata = {
+  title: 'Essays',
+  description,
+  alternates: {
+    canonical: '/articles',
+  },
+};
 
 export default function ArticlesPage() {
   const articles = getArticles();

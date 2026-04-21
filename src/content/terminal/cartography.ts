@@ -46,7 +46,7 @@ export const timelineEntries: TimelineEntry[] = [
             'The Catholic Church is formally abolished.',
             'The Vatican is transferred to the Academy of Sciences for research and the promotion of free thought.',
         ],
-        affectedRegions: ['france', 'spain', 'portugal', 'italy'],
+        affectedRegions: ['france', 'spain', 'portugal', 'italy-north'],
         related: [
             { label: 'Open dossiers', href: '/terminal?tab=dossiers' },
             { label: 'Read chronicle', href: '/novel' },
@@ -63,7 +63,7 @@ export const timelineEntries: TimelineEntry[] = [
             'The first emperor is thirteen years old.',
             'The transition preserves imperial territory without immediate loss.',
         ],
-        affectedRegions: ['france', 'spain', 'portugal', 'italy'],
+        affectedRegions: ['france', 'spain', 'portugal', 'italy-north'],
         related: [
             { label: 'Open dossiers', href: '/terminal?tab=dossiers&file=first-empire-succession' },
             { label: 'Read chronicle', href: '/novel' },
