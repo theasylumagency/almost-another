@@ -57,7 +57,10 @@ export type SignalBlock = {
 export type MapRegion = {
     id: string;
     label: string;
-    path: string;
-    labelX: number;
-    labelY: number;
+    svgIds: string[];
+};
+
+export type TerritoryGroup = {
+    id: string;
+    members: string[];
 };

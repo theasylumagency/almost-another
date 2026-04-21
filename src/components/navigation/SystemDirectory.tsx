@@ -13,6 +13,12 @@ const NAV_ITEMS = [
     description: 'The project map and cross-content entry point.',
   },
   {
+    href: '/terminal',
+    label: 'Terminal',
+    title: 'Restricted Archive',
+    description: 'Cartography, prefecture files, and signal protocol fragments.',
+  },
+  {
     href: '/articles',
     label: 'Reality A',
     title: 'Essays',
@@ -87,11 +93,10 @@ export default function SystemDirectory() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className={`group border p-6 transition-colors ${
-                      active
+                    className={`group border p-6 transition-colors ${active
                         ? 'border-red-500/40 bg-red-500/10'
                         : 'border-white/10 bg-white/[0.02] hover:border-white/25 hover:bg-white/[0.04]'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div>

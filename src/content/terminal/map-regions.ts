@@ -1,88 +1,47 @@
-import type { MapRegion } from './terminal.types';
+import type { MapRegion, TerritoryGroup } from './terminal.types';
 
 export const mapRegions: MapRegion[] = [
-    {
-        id: 'britain',
-        label: 'Britain',
-        path: 'M118 46 L131 39 L146 45 L152 58 L149 74 L138 86 L126 84 L118 72 L113 58 Z',
-        labelX: 132,
-        labelY: 58,
-    },
-    {
-        id: 'belgium',
-        label: 'Belgium',
-        path: 'M217 102 L228 100 L236 107 L234 117 L224 121 L214 114 Z',
-        labelX: 226,
-        labelY: 112,
-    },
-    {
-        id: 'france',
-        label: 'France',
-        path: 'M168 112 L188 105 L209 109 L224 124 L220 143 L210 160 L194 171 L176 168 L160 152 L156 132 Z',
-        labelX: 188,
-        labelY: 140,
-    },
-    {
-        id: 'spain',
-        label: 'Spain',
-        path: 'M106 182 L125 177 L156 181 L181 189 L197 203 L191 220 L169 234 L141 241 L117 236 L98 220 L96 198 Z',
-        labelX: 144,
-        labelY: 210,
-    },
-    {
-        id: 'portugal',
-        label: 'Portugal',
-        path: 'M92 184 L102 185 L105 205 L101 224 L93 224 L87 209 L87 194 Z',
-        labelX: 96,
-        labelY: 206,
-    },
-    {
-        id: 'italy',
-        label: 'Italy',
-        path: 'M270 166 L283 161 L293 168 L291 183 L299 197 L308 214 L315 238 L309 260 L300 275 L291 273 L288 254 L292 239 L286 221 L276 205 L269 190 L266 176 Z',
-        labelX: 298,
-        labelY: 224,
-    },
-    {
-        id: 'austria',
-        label: 'Austria',
-        path: 'M280 126 L301 123 L322 126 L335 136 L331 149 L310 155 L286 151 L273 140 Z',
-        labelX: 306,
-        labelY: 140,
-    },
-    {
-        id: 'germany',
-        label: 'Germany',
-        path: 'M246 84 L269 79 L292 83 L306 97 L302 113 L284 123 L260 122 L243 109 L238 95 Z',
-        labelX: 272,
-        labelY: 101,
-    },
+    { id: 'britain', label: 'Britain', svgIds: ['GB'] },
+    { id: 'belgium', label: 'Belgium', svgIds: ['BE'] },
+    { id: 'france', label: 'France', svgIds: ['FR'] },
+    { id: 'spain', label: 'Spain', svgIds: ['ES'] },
+    { id: 'portugal', label: 'Portugal', svgIds: ['PT'] },
+    { id: 'austria', label: 'Austria', svgIds: ['AT'] },
+    { id: 'germany', label: 'Germany', svgIds: ['DE'] },
+
+    // full country shell
+    { id: 'italy', label: 'Italy', svgIds: ['IT'] },
+
+    // historical overlays
+    { id: 'italy-north', label: 'North Italy', svgIds: ['IT_N'] },
+    { id: 'italy-south', label: 'South Italy', svgIds: ['IT_S'] },
+    { id: 'sicily', label: 'Sicily', svgIds: ['IT_Sic'] },
+
+    // later stage, not used in stage 1 map rendering yet
+    { id: 'russia-west', label: 'West Russia', svgIds: ['RU_W'] },
+    { id: 'russia-east', label: 'East Russia', svgIds: ['RU_E'] },
+
+    // macro overlays for stage 1
+    { id: 'north-africa', label: 'North Africa', svgIds: ['MA', 'DZ', 'TN', 'LY', 'EG'] },
+    { id: 'middle-east', label: 'Middle East', svgIds: ['TR', 'SY', 'LB', 'IL', 'JO', 'IQ'] },
+    { id: 'western-india', label: 'Western India', svgIds: ['IN'] },
+
+    // Europe & Ural scale
     {
         id: 'europe-ural',
-        label: 'Europe to the Urals',
-        path: 'M304 78 L342 70 L396 69 L453 78 L500 95 L536 118 L550 147 L541 172 L518 188 L483 194 L451 187 L426 172 L402 158 L381 150 L357 146 L334 138 L318 122 L310 103 Z',
-        labelX: 432,
-        labelY: 126,
+        label: 'Europe & Urals',
+        svgIds: [
+            'RU', 'VA', 'UA', 'TR', 'SM', 'SK', 'SI', 'RS', 'RO',
+            'PL', 'NL', 'MK', 'ME', 'MD', 'MC', 'LU', 'LT', 'LI', 'XK',
+            'HU', 'HR', 'GR', 'GE', 'DE', 'CZ', 'CH', 'BY', 'BG', 'BE',
+            'BA', 'AT', 'AM', 'AL'
+        ]
     },
+];
+
+export const territoryGroups: TerritoryGroup[] = [
     {
-        id: 'north-africa',
-        label: 'North Africa',
-        path: 'M182 286 L214 280 L260 279 L310 281 L354 288 L389 302 L393 320 L366 330 L316 334 L261 333 L216 327 L186 316 L175 302 Z',
-        labelX: 284,
-        labelY: 308,
-    },
-    {
-        id: 'middle-east',
-        label: 'Middle East',
-        path: 'M397 196 L425 193 L456 196 L489 205 L519 221 L538 243 L532 267 L506 278 L471 279 L441 268 L422 252 L408 229 Z',
-        labelX: 470,
-        labelY: 238,
-    },
-    {
-        id: 'western-india',
-        label: 'Western India',
-        path: 'M532 280 L548 279 L565 288 L575 302 L573 319 L561 330 L548 328 L538 317 L532 300 Z',
-        labelX: 554,
-        labelY: 304,
+        id: 'ITALY_ALL',
+        members: ['IT_N', 'IT_S', 'IT_Sic'],
     },
 ];
